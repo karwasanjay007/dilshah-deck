@@ -1,0 +1,1574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="slides-format" content="viewport">
+    <title>Dil Shah Tea — Market Entry Strategy</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style type="text/tailwindcss">
+        @theme {
+            --color-bg: #0f1923;
+            --color-bg-deep: #070d12;
+            --color-surface: #1a2535;
+            --color-text: #f0ede6;
+            --color-text-secondary: #c8c2b8;
+            --color-text-muted: #8a8278;
+            --color-accent-1: #d4a847;
+            --color-accent-2: #e8c97a;
+            --color-accent-3: #8b6914;
+            --color-green: #22c55e;
+            --color-red: #ef4444;
+            --color-amber: #f59e0b;
+            --color-glass-bg: rgba(255,255,255,0.06);
+            --color-glass-border: rgba(255,255,255,0.10);
+            --color-vignette: rgba(0,0,0,0.45);
+            --font-display: "Playfair Display", serif;
+            --font-body: "DM Sans", sans-serif;
+        }
+    </style>
+    <style>
+        :root {
+            --color-bg: #0f1923;
+            --color-text: #f0ede6;
+            --color-accent-1: #d4a847;
+            --color-accent-2: #e8c97a;
+            --color-glass-bg: rgba(255,255,255,0.06);
+            --color-glass-border: rgba(255,255,255,0.10);
+            --color-vignette: rgba(0,0,0,0.45);
+            --glow-color-rgb: 212,168,71;
+        }
+        *, *::before, *::after { box-sizing: border-box; }
+        html, body { background: var(--color-bg); margin: 0; padding: 0; }
+        body { font-family: "DM Sans", sans-serif; color: var(--color-text); overflow: hidden; height: 100vh; width: 100vw; }
+
+        .deck { width: 100vw; height: 100vh; position: relative; }
+        .slide {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--color-bg);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            opacity: 0; transform: scale(0.96);
+            transition: opacity 0.65s ease, transform 0.65s ease;
+            pointer-events: none; overflow: hidden;
+        }
+        .slide.active { opacity: 1; transform: scale(1); pointer-events: all; }
+        .slide > .content {
+            position: relative; z-index: 2;
+            width: 100%; max-width: 1100px;
+            padding: clamp(1.5rem, 3.5vw, 3.5rem);
+        }
+
+        /* NAV */
+        .nav-controls {
+            position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%);
+            display: flex; align-items: center; gap: 14px; z-index: 100;
+            background: rgba(15,25,35,0.85); backdrop-filter: blur(12px);
+            padding: 8px 22px; border-radius: 40px;
+            border: 1px solid rgba(212,168,71,0.25);
+        }
+        .nav-btn {
+            width: 36px; height: 36px; border: none;
+            background: rgba(212,168,71,0.12); color: #d4a847;
+            border-radius: 50%; font-size: 1.1rem; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: background 0.2s;
+        }
+        .nav-btn:hover { background: rgba(212,168,71,0.28); }
+        .slide-dots { display: flex; gap: 7px; }
+        .slide-dots .dot {
+            width: 8px; height: 8px; border-radius: 50%;
+            background: rgba(212,168,71,0.25); cursor: pointer;
+            transition: background 0.3s, transform 0.3s;
+        }
+        .slide-dots .dot.active { background: #d4a847; transform: scale(1.4); }
+        .slide-counter { font-size: 0.75rem; color: #8a8278; min-width: 36px; text-align: center; font-family: "DM Sans", sans-serif; }
+
+        /* REVEAL — visible by default so content shows in any viewer (e.g. the
+           slides-format=viewport artifact runtime, which paginates slides without
+           calling the deck's goToSlide). The interactive entrance animation is
+           driven by animateSlide() via inline styles, so it still plays in-deck. */
+        .reveal { opacity: 1; transform: none; }
+
+        /* GLOW */
+        .text-glow { text-shadow: 0 0 20px rgba(212,168,71,0.55), 0 0 40px rgba(212,168,71,0.2); }
+        @keyframes glow-pulse {
+            0%,100% { text-shadow: 0 0 18px rgba(212,168,71,0.5), 0 0 36px rgba(212,168,71,0.2); }
+            50%      { text-shadow: 0 0 28px rgba(212,168,71,0.85), 0 0 56px rgba(212,168,71,0.32); }
+        }
+        .glow-pulse { animation: glow-pulse 3s ease-in-out infinite; }
+
+        /* GRADIENT MESH */
+        @keyframes float-slow {
+            0%   { transform: translate(0,0) scale(1); }
+            25%  { transform: translate(55px,-45px) scale(1.1); }
+            50%  { transform: translate(-35px,35px) scale(0.92); }
+            75%  { transform: translate(45px,18px) scale(1.07); }
+            100% { transform: translate(0,0) scale(1); }
+        }
+        @keyframes float-drift {
+            0%   { transform: translate(0,0) scale(1) rotate(0deg); }
+            33%  { transform: translate(-45px,-55px) scale(1.13) rotate(3deg); }
+            66%  { transform: translate(38px,28px) scale(0.9) rotate(-2deg); }
+            100% { transform: translate(0,0) scale(1) rotate(0deg); }
+        }
+        @keyframes float { 0%,100%{ transform: translateY(0); } 50%{ transform: translateY(-12px); } }
+        .gradient-mesh { position: absolute; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+        .blob { position: absolute; border-radius: 50%; filter: blur(80px); animation: float-slow 11s ease-in-out infinite; }
+        .blob:nth-child(2) { animation: float-drift 15s ease-in-out infinite; }
+        .blob:nth-child(3) { animation: float-slow 19s ease-in-out infinite reverse; }
+
+        /* DEPTH */
+        .slide::before {
+            content:''; position:absolute; inset:0; z-index:1; pointer-events:none;
+            background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+            background-size:256px; opacity:0.025; mix-blend-mode:overlay;
+        }
+        .slide::after {
+            content:''; position:absolute; inset:0; z-index:1; pointer-events:none;
+            background:radial-gradient(ellipse at center, transparent 55%, var(--color-vignette) 100%);
+        }
+
+        /* BARS */
+        .bar-track { background: rgba(255,255,255,0.08); border-radius: 8px; height: 28px; position: relative; overflow: hidden; }
+        .bar-fill { height: 100%; border-radius: 8px; width: 0%; transition: width 0.7s ease; }
+        .bar-fill.gold  { background: linear-gradient(90deg, #8b6914, #d4a847); }
+        .bar-fill.green { background: linear-gradient(90deg, #15803d, #22c55e); }
+        .bar-fill.blue  { background: linear-gradient(90deg, #1d4ed8, #60a5fa); }
+        .bar-fill.red   { background: linear-gradient(90deg, #991b1b, #ef4444); }
+        .bar-fill.amber { background: linear-gradient(90deg, #92400e, #f59e0b); }
+        .bar-fill.teal  { background: linear-gradient(90deg, #115e59, #2dd4bf); }
+
+        /* CARDS */
+        .glass-card {
+            background: rgba(255,255,255,0.055);
+            backdrop-filter: blur(14px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 14px;
+            padding: 1.4rem 1.6rem;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+        .glass-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0,0,0,0.3); }
+
+        /* STAT BADGE */
+        .stat-big { font-size: clamp(2.2rem, 4.5vw, 3.6rem); font-weight: 900; font-family: "DM Sans", sans-serif; line-height: 1; }
+
+        /* HEATMAP */
+        .hm-cell {
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 6px; font-size: 0.72rem; font-weight: 700;
+            color: #fff; padding: 0.25rem 0.1rem;
+            transition: transform 0.2s;
+        }
+        .hm-cell:hover { transform: scale(1.08); cursor: default; }
+        .hm-5 { background: #166534; }
+        .hm-4 { background: #15803d; }
+        .hm-3 { background: #d97706; }
+        .hm-2 { background: #c2410c; }
+        .hm-1 { background: #991b1b; }
+
+        /* TIMELINE */
+        .tl-line { position: absolute; left: 18px; top: 0; bottom: 0; width: 2px; background: linear-gradient(180deg, #d4a847, rgba(212,168,71,0.15)); }
+        .tl-dot { width: 14px; height: 14px; border-radius: 50%; background: #d4a847; box-shadow: 0 0 12px rgba(212,168,71,0.7); flex-shrink: 0; }
+
+        /* GRADIENT TEXT */
+        .grad-text {
+            background: linear-gradient(135deg, #d4a847 0%, #e8c97a 50%, #d4a847 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* SECTION LABEL */
+        .section-label {
+            font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase;
+            color: #d4a847; font-weight: 600; margin-bottom: 0.5rem;
+        }
+
+        /* DIVIDER */
+        .gold-line { height: 2px; background: linear-gradient(90deg, transparent, #d4a847, transparent); margin: 0.75rem 0; }
+
+        /* DATA TABLE */
+        .data-table { width: 100%; border-collapse: collapse; }
+        .data-table th { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.1em; color: #d4a847; font-weight: 600; padding: 0.55rem 0.8rem; border-bottom: 1px solid rgba(212,168,71,0.25); text-align: left; }
+        .data-table td { font-size: 0.82rem; color: #c8c2b8; padding: 0.55rem 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.05); vertical-align: middle; }
+        .data-table tr:hover td { background: rgba(255,255,255,0.03); }
+
+        /* PILL BADGE */
+        .badge { display: inline-block; padding: 0.2rem 0.65rem; border-radius: 20px; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.05em; }
+        .badge-green  { background: rgba(34,197,94,0.18); color: #4ade80; border: 1px solid rgba(34,197,94,0.25); }
+        .badge-red    { background: rgba(239,68,68,0.18);  color: #f87171; border: 1px solid rgba(239,68,68,0.25); }
+        .badge-amber  { background: rgba(245,158,11,0.18); color: #fbbf24; border: 1px solid rgba(245,158,11,0.25); }
+        .badge-gold   { background: rgba(212,168,71,0.18); color: #d4a847; border: 1px solid rgba(212,168,71,0.3); }
+
+        /* COUNTER */
+        [data-count] { font-variant-numeric: tabular-nums; }
+
+        /* PARTICLE */
+        .particle-canvas, .particle-canvas-ambient { position:absolute; inset:0; z-index:1; pointer-events:none; }
+
+        /* MOUSE SPOTLIGHT */
+        .mouse-spotlight { position:fixed; inset:0; z-index:99; pointer-events:none; }
+
+        /* ACCENT LEFT BORDER */
+        .accent-left { border-left: 3px solid #d4a847; padding-left: 0.9rem; }
+
+        /* SLIDE 13 PRICE TABLE — compact (kept in head; never inline a style tag inside a slide) */
+        #pl-tbl td, #pl-tbl th { padding: 0.24rem 0.6rem; font-size: 0.76rem; line-height: 1.2; }
+        #pl-tbl .badge { padding: 0.08rem 0.5rem; font-size: 0.62rem; }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.2s !important; }
+        }
+    </style>
+</head>
+<body>
+<div class="mouse-spotlight" id="spotlight"></div>
+<div class="deck">
+
+<!-- ═══════════════ SLIDE 1: TITLE ═══════════════ -->
+<div class="slide active" data-slide="1">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:520px;height:520px;top:-120px;right:-100px;background:#d4a847;opacity:0.13;"></div>
+        <div class="blob" style="width:320px;height:320px;bottom:-80px;left:-70px;background:#8b6914;opacity:0.12;"></div>
+        <div class="blob" style="width:200px;height:200px;top:42%;left:12%;background:#e8c97a;opacity:0.09;"></div>
+    </div>
+    <canvas class="particle-canvas" id="pc1"></canvas>
+    <div class="content" style="text-align:center;">
+        <div style="font-size:clamp(3.5rem,8vw,6.5rem);margin-bottom:1rem;animation:float 3.5s ease-in-out infinite;">🍵</div>
+        <h1 class="reveal" style="font-family:'Playfair Display',serif;font-size:clamp(2.4rem,5.5vw,4.6rem);font-weight:900;line-height:1.1;margin:0 0 1rem 0;background:linear-gradient(135deg,#d4a847 0%,#e8c97a 50%,#d4a847 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Dil Shah Tea</h1>
+        <p class="reveal" style="font-size:clamp(1rem,1.8vw,1.4rem);letter-spacing:0.18em;text-transform:uppercase;color:#8a8278;margin:0 0 0.5rem 0;font-weight:500;">Market Entry Strategy</p>
+        <p class="reveal" style="font-size:clamp(0.85rem,1.2vw,1.1rem);color:#c8c2b8;margin:0;">Guntakal · Yeshwanthpur · South India Expansion 2026</p>
+        <div class="reveal gold-line" style="width:180px;margin:1.8rem auto 0;"></div>
+        <p class="reveal" style="font-size:0.78rem;color:#8a8278;margin-top:0.6rem;letter-spacing:0.1em;">CONFIDENTIAL — OWNER BRIEFING</p>
+    </div>
+</div>
+
+<!-- ═══════════════ NEW: ORIENTATION — FUNNEL, TEAM, THREAD ═══════════════ -->
+<div class="slide" data-slide="2">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:420px;height:420px;top:-90px;right:-80px;background:#d4a847;opacity:0.1;"></div>
+        <div class="blob" style="width:280px;height:280px;bottom:-60px;left:-50px;background:#8b6914;opacity:0.08;"></div>
+    </div>
+    <div class="content">
+        <div class="section-label reveal">Orientation</div>
+        <h2 class="reveal" style="font-family:'Playfair Display',serif;font-size:clamp(1.6rem,3vw,2.5rem);font-weight:700;margin:0 0 0.9rem 0;">How This Briefing Works</h2>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+            <div>
+                <div class="glass-card reveal" style="margin-bottom:0.9rem;">
+                    <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:#d4a847;font-weight:600;margin-bottom:0.7rem;">A Funnel — Widest View Down to Two Streets</div>
+                    <div style="display:flex;flex-wrap:wrap;gap:0.4rem;align-items:center;font-size:0.78rem;">
+                        <span class="badge badge-gold">World</span><span style="color:#8a8278;">→</span>
+                        <span class="badge badge-gold">India</span><span style="color:#8a8278;">→</span>
+                        <span class="badge badge-gold">3 States</span><span style="color:#8a8278;">→</span>
+                        <span class="badge badge-gold">2 Streets</span><span style="color:#8a8278;">→</span>
+                        <span class="badge badge-gold">Competitors</span><span style="color:#8a8278;">→</span>
+                        <span class="badge badge-gold">Price</span><span style="color:#8a8278;">→</span>
+                        <span class="badge badge-gold">Distributor</span><span style="color:#8a8278;">→</span>
+                        <span class="badge badge-gold">Digital</span><span style="color:#8a8278;">→</span>
+                        <span class="badge badge-green">Roadmap</span>
+                    </div>
+                    <p style="font-size:0.82rem;color:#c8c2b8;margin:0.7rem 0 0 0;line-height:1.6;">See the size of the prize, see why tea suits a focused brand, see who we really compete with, then see the order of moves that wins. The two streets we actually work: <strong style="color:#f0ede6;">Guntakal</strong> in Andhra and <strong style="color:#f0ede6;">Yeshwanthpur</strong> in Bangalore.</p>
+                </div>
+                <div class="glass-card reveal accent-left">
+                    <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:#d4a847;font-weight:600;margin-bottom:0.4rem;">No Money Terms — By Design</div>
+                    <p style="font-size:0.83rem;color:#c8c2b8;margin:0;line-height:1.6;">This briefing is about the market and the opportunity. It carries no commercial or equity terms. Those come later, once the picture is shared and the trust is built.</p>
+                </div>
+            </div>
+            <div>
+                <div class="glass-card reveal" style="margin-bottom:0.9rem;">
+                    <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:#d4a847;font-weight:600;margin-bottom:0.7rem;">Who Runs What</div>
+                    <div style="display:flex;flex-direction:column;gap:0.7rem;font-size:0.84rem;color:#c8c2b8;line-height:1.55;">
+                        <div style="display:flex;gap:0.7rem;align-items:flex-start;">
+                            <span style="font-size:1.3rem;">🧭</span>
+                            <div><strong style="color:#f0ede6;">Suraj Karwa</strong> — Andhra Pradesh &amp; Rayalaseema, anchored at Guntakal (Vaibhav Agencies). Appoints sub-distributors mandal by mandal, the same model Modi Tea built.</div>
+                        </div>
+                        <div style="display:flex;gap:0.7rem;align-items:flex-start;">
+                            <span style="font-size:1.3rem;">🚀</span>
+                            <div><strong style="color:#f0ede6;">Vikas</strong> — Bangalore and the rest of India, with the digital partnership that compounds across every new state.</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="glass-card reveal" style="background:rgba(212,168,71,0.1);border-color:rgba(212,168,71,0.28);">
+                    <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:#d4a847;font-weight:700;margin-bottom:0.45rem;">The Thread That Ties It Together</div>
+                    <p style="font-size:0.95rem;color:#f0ede6;margin:0;line-height:1.6;font-weight:500;">Lead with <strong style="color:#e8c97a;">taste and strength</strong>, then <strong style="color:#e8c97a;">price</strong>, then the <strong style="color:#e8c97a;">give-back mission</strong>.</p>
+                    <p style="font-size:0.84rem;color:#c8c2b8;margin:0.5rem 0 0 0;line-height:1.55;">People buy the cup first. Everything in this plan serves that order.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════ SLIDE 2: MARKET OPPORTUNITY ═══════════════ -->
+<div class="slide" data-slide="3">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:400px;height:400px;top:-80px;right:-80px;background:#d4a847;opacity:0.09;"></div>
+        <div class="blob" style="width:280px;height:280px;bottom:-60px;left:-50px;background:#8b6914;opacity:0.08;"></div>
+    </div>
+    <div class="content">
+        <div class="section-label reveal">Why Now</div>
+        <h2 class="reveal" style="font-family:'Playfair Display',serif;font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:700;margin:0 0 1.2rem 0;">India Tea Market — The Big Picture</h2>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.2rem;">
+            <div class="glass-card reveal" style="text-align:center;">
+                <div class="stat-big grad-text glow-pulse" data-count="11.72" data-suffix="B$">0</div>
+                <div style="font-size:0.75rem;color:#8a8278;margin-top:0.4rem;text-transform:uppercase;letter-spacing:0.08em;">India Market 2024</div>
+            </div>
+            <div class="glass-card reveal" style="text-align:center;">
+                <div class="stat-big grad-text glow-pulse" data-count="15.12" data-suffix="B$">0</div>
+                <div style="font-size:0.75rem;color:#8a8278;margin-top:0.4rem;text-transform:uppercase;letter-spacing:0.08em;">Forecast 2030</div>
+            </div>
+            <div class="glass-card reveal" style="text-align:center;">
+                <div class="stat-big grad-text glow-pulse" data-count="4.34" data-suffix="%">0</div>
+                <div style="font-size:0.75rem;color:#8a8278;margin-top:0.4rem;text-transform:uppercase;letter-spacing:0.08em;">CAGR 2024–2030</div>
+            </div>
+            <div class="glass-card reveal" style="text-align:center;">
+                <div class="stat-big" style="color:#ef4444;" data-count="270" data-suffix="M kg">0</div>
+                <div style="font-size:0.75rem;color:#8a8278;margin-top:0.4rem;text-transform:uppercase;letter-spacing:0.08em;">FY26 Export Volume</div>
+            </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+            <div class="glass-card reveal accent-left">
+                <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:#d4a847;font-weight:600;margin-bottom:0.4rem;">Supply Shock = Your Opportunity</div>
+                <p style="font-size:0.88rem;color:#c8c2b8;margin:0;line-height:1.6;">Assam tea prices rose <strong style="color:#f0ede6;">10% YoY in 2024</strong>. Big brands absorb this by padding margins. Dil Shah, sourcing direct from Assam CTC estates, can hold retail pricing steady and win on value.</p>
+            </div>
+            <div class="glass-card reveal accent-left">
+                <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:#d4a847;font-weight:600;margin-bottom:0.4rem;">South India Remains Under-Served</div>
+                <p style="font-size:0.88rem;color:#c8c2b8;margin:0;line-height:1.6;">HUL (21% share) dominates nationally but <strong style="color:#f0ede6;">Andhra Pradesh, Telangana &amp; Karnataka</strong> still have fragmented regional-brand pockets. Strong taste preference = perfect fit for Assam CTC.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════ NEW: INDIA SHIFTING TO BRANDED ═══════════════ -->
+<div class="slide" data-slide="4">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:400px;height:400px;top:-80px;right:-80px;background:#d4a847;opacity:0.09;"></div>
+        <div class="blob" style="width:280px;height:280px;bottom:-60px;left:-50px;background:#8b6914;opacity:0.08;"></div>
+    </div>
+    <div class="content">
+        <div class="section-label reveal">Why Tea, Why Now</div>
+        <h2 class="reveal" style="font-family:'Playfair Display',serif;font-size:clamp(1.6rem,3vw,2.6rem);font-weight:700;margin:0 0 1rem 0;">India — A Tea Nation Shifting to Branded</h2>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.1rem;">
+            <div class="glass-card reveal" style="text-align:center;">
+                <div class="stat-big grad-text glow-pulse" data-count="840" data-suffix="g">0</div>
+                <div style="font-size:0.72rem;color:#8a8278;margin-top:0.4rem;text-transform:uppercase;letter-spacing:0.06em;">Per person / year</div>
+            </div>
+            <div class="glass-card reveal" style="text-align:center;">
+                <div class="stat-big grad-text glow-pulse" data-count="80" data-suffix="%">0</div>
+                <div style="font-size:0.72rem;color:#8a8278;margin-top:0.4rem;text-transform:uppercase;letter-spacing:0.06em;">Households drink tea</div>
+            </div>
+            <div class="glass-card reveal" style="text-align:center;">
+                <div class="stat-big" style="color:#22c55e;" data-count="260" data-suffix="B₹">0</div>
+                <div style="font-size:0.72rem;color:#8a8278;margin-top:0.4rem;text-transform:uppercase;letter-spacing:0.06em;">Branded packaged market</div>
+            </div>
+            <div class="glass-card reveal" style="text-align:center;">
+                <div class="stat-big grad-text glow-pulse" data-count="61" data-suffix="%">0</div>
+                <div style="font-size:0.72rem;color:#8a8278;margin-top:0.4rem;text-transform:uppercase;letter-spacing:0.06em;">CTC of global tea-by-form</div>
+            </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1.1fr 1fr;gap:1rem;">
+            <div class="glass-card reveal" style="background:rgba(34,197,94,0.07);border-color:rgba(34,197,94,0.22);">
+                <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:#22c55e;font-weight:600;margin-bottom:0.45rem;">The Conversion Prize</div>
+                <p style="font-size:0.86rem;color:#c8c2b8;margin:0 0 0.6rem 0;line-height:1.6;">India has moved from <strong style="color:#f0ede6;">~half the market branded a decade ago to about two-thirds today</strong>. That leaves <strong style="color:#4ade80;">~one-third still loose &amp; unbranded</strong> — the exact pool a trusted regional brand converts, one shop and one hotel at a time.</p>
+                <div class="bar-track" style="height:22px;"><div class="bar-fill green" data-width="67" style="display:flex;align-items:center;justify-content:flex-end;padding-right:8px;font-size:0.7rem;font-weight:700;color:#fff;">~⅔ branded</div></div>
+                <div style="font-size:0.7rem;color:#8a8278;margin-top:0.35rem;">Remaining ~⅓ loose = our runway.</div>
+            </div>
+            <div class="glass-card reveal accent-left">
+                <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:#d4a847;font-weight:600;margin-bottom:0.4rem;">India's Place &amp; Our Grades</div>
+                <div style="font-size:0.82rem;color:#c8c2b8;line-height:1.65;">
+                    <div>🌍 <strong style="color:#f0ede6;">1,369.98 M kg</strong> produced 2025 — ~19% of world output; largest black-tea producer</div>
+                    <div>📦 <strong style="color:#f0ede6;">280.40 M kg</strong> exported (record, up from 256.17 M)</div>
+                    <div>☕ Our grades — <strong style="color:#d4a847;">Dust, Grain, Hotel Mix</strong> — sit in the dominant milk-tea CTC segment</div>
+                </div>
+            </div>
+        </div>
+        <div class="reveal" style="margin-top:0.9rem;padding:0.65rem 1rem;background:rgba(239,68,68,0.08);border-radius:10px;border:1px solid rgba(239,68,68,0.22);font-size:0.83rem;color:#c8c2b8;line-height:1.55;">
+            <strong style="color:#f87171;">⚠ Supply wobble in our favour:</strong> an Assam rainfall deficit cut Q1-2026 production by ~11% year on year. When supply tightens, a brand that holds <strong style="color:#f0ede6;">godown buffer stock and steady supply</strong> is worth more to a hotel or wholesaler than one that runs short.
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════ SLIDE 3: SOUTH INDIA 3-STATE OVERVIEW ═══════════════ -->
+<div class="slide" data-slide="5">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:380px;height:380px;top:-70px;right:-70px;background:#d4a847;opacity:0.09;"></div>
+        <div class="blob" style="width:260px;height:260px;bottom:-50px;left:-40px;background:#8b6914;opacity:0.08;"></div>
+    </div>
+    <div class="content">
+        <div class="section-label reveal">Three-State Strategy</div>
+        <h2 class="reveal" style="font-family:'Playfair Display',serif;font-size:clamp(1.6rem,3vw,2.5rem);font-weight:700;margin:0 0 1rem 0;">Where Dil Shah Enters</h2>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;">
+            <!-- AP -->
+            <div class="glass-card reveal" style="border-top:3px solid #d4a847;">
+                <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.75rem;">
+                    <span style="font-size:1.6rem;">🏛️</span>
+                    <div>
+                        <div style="font-weight:700;font-size:1rem;color:#f0ede6;">Andhra Pradesh</div>
+                        <span class="badge badge-green">Priority 1</span>
+                    </div>
+                </div>
+                <div class="gold-line"></div>
+                <div style="font-size:0.82rem;color:#c8c2b8;line-height:1.7;margin-top:0.6rem;">
+                    <div>📍 <strong style="color:#f0ede6;">Anchor:</strong> Guntakal (Anantapur dist.)</div>
+                    <div>🚂 Railway junction — 6 lines converge</div>
+                    <div>🏪 300+ kirana shops in core zone</div>
+                    <div>☕ <strong style="color:#d4a847;">Key competitor:</strong> Ganga CTC, Modi Tea</div>
+                    <div>💰 Price band: ₹130–₹320 / kg retail</div>
+                    <div>📦 Sub-distributor mandals: Gooty, Pamidi, Uravakonda</div>
+                </div>
+            </div>
+            <!-- Telangana -->
+            <div class="glass-card reveal" style="border-top:3px solid #f59e0b;">
+                <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.75rem;">
+                    <span style="font-size:1.6rem;">🌆</span>
+                    <div>
+                        <div style="font-weight:700;font-size:1rem;color:#f0ede6;">Telangana</div>
+                        <span class="badge badge-amber">Priority 2</span>
+                    </div>
+                </div>
+                <div class="gold-line"></div>
+                <div style="font-size:0.82rem;color:#c8c2b8;line-height:1.7;margin-top:0.6rem;">
+                    <div>📍 <strong style="color:#f0ede6;">Anchor:</strong> Hyderabad wholesale belt</div>
+                    <div>🏭 Kachiguda &amp; Secunderabad markets</div>
+                    <div>🔴 <strong style="color:#ef4444;">Challenge:</strong> Modi Tea home turf</div>
+                    <div>☕ Modi Tea: 250+ AP/TS distributors</div>
+                    <div>💰 Price band: ₹150–₹380 / kg retail</div>
+                    <div>📦 Strategy: Beat Modi on cup yield</div>
+                </div>
+            </div>
+            <!-- Karnataka -->
+            <div class="glass-card reveal" style="border-top:3px solid #60a5fa;">
+                <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.75rem;">
+                    <span style="font-size:1.6rem;">🌇</span>
+                    <div>
+                        <div style="font-weight:700;font-size:1rem;color:#f0ede6;">Karnataka</div>
+                        <span class="badge" style="background:rgba(96,165,250,0.18);color:#93c5fd;border:1px solid rgba(96,165,250,0.25);">Priority 3</span>
+                    </div>
+                </div>
+                <div class="gold-line"></div>
+                <div style="font-size:0.82rem;color:#c8c2b8;line-height:1.7;margin-top:0.6rem;">
+                    <div>📍 <strong style="color:#f0ede6;">Anchor:</strong> Yeshwanthpur (Bengaluru)</div>
+                    <div>🏭 Industrial belt — 2,200+ factories</div>
+                    <div>🍵 17,500 cups/hr at Bengaluru station</div>
+                    <div>☕ <strong style="color:#f59e0b;">Key competitor:</strong> Kanan Devan, AVT</div>
+                    <div>💰 Price band: ₹200–₹550 / kg retail</div>
+                    <div>📦 HoReCa bulk + Peenya wholesale</div>
+                </div>
+            </div>
+        </div>
+        <div class="reveal" style="margin-top:0.9rem;padding:0.65rem 1rem;background:rgba(212,168,71,0.08);border-radius:10px;border:1px solid rgba(212,168,71,0.2);font-size:0.82rem;color:#c8c2b8;">
+            <strong style="color:#d4a847;">📋 Rule of thumb:</strong> Prove the model in Guntakal (months 1–3) before committing capital to Yeshwanthpur. One anchor done right beats three anchors done badly.
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════ NEW: GO MORE LOCAL THAN TATA ═══════════════ -->
+<div class="slide" data-slide="6">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:380px;height:380px;top:-70px;right:-70px;background:#d4a847;opacity:0.09;"></div>
+        <div class="blob" style="width:260px;height:260px;bottom:-50px;left:-40px;background:#8b6914;opacity:0.08;"></div>
+    </div>
+    <div class="content">
+        <div class="section-label reveal">Three States, Up Close</div>
+        <h2 class="reveal" style="font-family:'Playfair Display',serif;font-size:clamp(1.5rem,2.8vw,2.3rem);font-weight:700;margin:0 0 0.9rem 0;">Win on Regional Pride — Go More Local Than Tata</h2>
+        <div class="glass-card reveal" style="margin-bottom:0.9rem;">
+            <table class="data-table">
+                <thead><tr><th>State</th><th>Drinking culture</th><th>What it means for us</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td style="color:#f0ede6;font-weight:600;">Andhra / Rayalaseema</td>
+                        <td>Strong, milky, <em>kadak</em> by default. Bold Rayalaseema taste.</td>
+                        <td>Our natural home. Strength + cost-per-cup land hardest here. <strong style="color:#d4a847;">Suraj's territory.</strong></td>
+                    </tr>
+                    <tr>
+                        <td style="color:#f0ede6;font-weight:600;">Telangana</td>
+                        <td>Same Telugu strong-tea profile. Modi and our model both span AP + TS.</td>
+                        <td>A natural extension of the Andhra network — same taste, same sachet habit.</td>
+                    </tr>
+                    <tr>
+                        <td style="color:#f0ede6;font-weight:600;">Karnataka</td>
+                        <td>Coffee-origin state, but tea wins out-of-home and in mass households. Kanan Devan leads dust.</td>
+                        <td>Bangalore is a <strong style="color:#60a5fa;">tea-pocket hunt inside a coffee city</strong>. Win canteens, stalls, migrant belts.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="glass-card reveal" style="background:rgba(212,168,71,0.09);border-color:rgba(212,168,71,0.25);">
+            <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:#d4a847;font-weight:700;margin-bottom:0.45rem;">The Lesson From Tata's Own Playbook — "Desh Ki Chai"</div>
+            <p style="font-size:0.88rem;color:#c8c2b8;margin:0;line-height:1.65;">Tata tailors the blend, the pack and the language to each state — <strong style="color:#f0ede6;">Telugu script, Kondapalli toys and Kalamkari art</strong> on the Andhra &amp; Telangana packs. Regional pride plus strength beats generic national messaging in these markets. <strong style="color:#e8c97a;">We can go even more local than Tata, because we genuinely are local.</strong></p>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════ SLIDE 4: GUNTAKAL DEEP DIVE ═══════════════ -->
+<div class="slide" data-slide="7">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:350px;height:350px;top:-70px;right:-60px;background:#d4a847;opacity:0.09;"></div>
+        <div class="blob" style="width:240px;height:240px;bottom:-45px;left:-35px;background:#8b6914;opacity:0.08;"></div>
+    </div>
+    <div class="content">
+        <div class="section-label reveal">Anchor 1 — Deep Dive</div>
+        <h2 class="reveal" style="font-family:'Playfair Display',serif;font-size:clamp(1.6rem,3vw,2.4rem);font-weight:700;margin:0 0 0.9rem 0;">Guntakal, Anantapur District</h2>
+        <p class="reveal" style="font-size:0.8rem;color:#8a8278;margin:-0.4rem 0 0.8rem 0;line-height:1.5;">Railway junction &amp; divisional HQ of South Central Railway's Guntakal division · population ~126,000 · semi-arid Rayalaseema strong-tea belt (groundnut &amp; millet country).</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+            <div>
+                <div class="glass-card reveal" style="margin-bottom:0.9rem;">
+                    <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:#d4a847;font-weight:600;margin-bottom:0.6rem;">Competitors on Ground</div>
+                    <table class="data-table">
+                        <thead><tr>
+                            <th>Brand</th><th>Price/kg</th><th>Threat</th>
+                        </tr></thead>
+                        <tbody>
+                            <tr><td>Ganga CTC Sachets</td><td>₹130–₹160</td><td><span class="badge badge-red">High</span></td></tr>
+                            <tr><td>Modi Tea</td><td>₹180–₹260</td><td><span class="badge badge-red">High</span></td></tr>
+                            <tr><td>Brooke Bond 3 Roses</td><td>₹220–₹320</td><td><span class="badge badge-amber">Med</span></td></tr>
+                            <tr><td>Tata Chakra Gold</td><td>₹240–₹350</td><td><span class="badge badge-amber">Med</span></td></tr>
+                            <tr><td>Gemini Tea</td><td>₹150–₹200</td><td><span class="badge badge-amber">Med</span></td></tr>
+                            <tr><td>Andhra Tea Corp</td><td>₹160–₹220</td><td><span class="badge badge-green">Low</span></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="glass-card reveal accent-left">
+                    <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:#d4a847;font-weight:600;margin-bottom:0.4rem;">Dil Shah Sweet Spot</div>
+                    <p style="font-size:0.84rem;color:#c8c2b8;margin:0;line-height:1.6;">Target <strong style="color:#f0ede6;">₹240–₹320/kg</strong>. This beats Tata &amp; Brooke Bond on price while sitting above the Ganga/Gemini commodity tier. Position as <em>"premium Assam taste at regular price."</em></p>
+                </div>
+            </div>
+            <div>
+                <div class="glass-card reveal" style="margin-bottom:0.9rem;">
+                    <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:#d4a847;font-weight:600;margin-bottom:0.75rem;">Mandal Sub-Distributor Network</div>
+                    <div style="display:flex;flex-direction:column;gap:0.55rem;">
+                        <div style="display:flex;align-items:center;gap:0.75rem;">
+                            <div class="tl-dot"></div>
+                            <div style="font-size:0.83rem;"><strong style="color:#f0ede6;">Guntakal HQ</strong> <span style="color:#8a8278;">— 1 master distributor</span></div>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:0.75rem;padding-left:0.5rem;">
+                            <div style="width:8px;height:8px;border-radius:50%;background:#d4a84780;flex-shrink:0;"></div>
+                            <div style="font-size:0.83rem;color:#c8c2b8;">→ <strong style="color:#f0ede6;">Gooty</strong> sub-dist. (30 km) — 45 kiranas</div>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:0.75rem;padding-left:0.5rem;">
+                            <div style="width:8px;height:8px;border-radius:50%;background:#d4a84780;flex-shrink:0;"></div>
+                            <div style="font-size:0.83rem;color:#c8c2b8;">→ <strong style="color:#f0ede6;">Pamidi</strong> sub-dist. (42 km) — 28 kiranas</div>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:0.75rem;padding-left:0.5rem;">
+                            <div style="width:8px;height:8px;border-radius:50%;background:#d4a84780;flex-shrink:0;"></div>
+                            <div style="font-size:0.83rem;color:#c8c2b8;">→ <strong style="color:#f0ede6;">Uravakonda</strong> sub-dist. (55 km) — 22 kiranas</div>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:0.75rem;padding-left:0.5rem;">
+                            <div style="width:8px;height:8px;border-radius:50%;background:#d4a84780;flex-shrink:0;"></div>
+                            <div style="font-size:0.83rem;color:#c8c2b8;">→ <strong style="color:#f0ede6;">Tadpatri</strong> sub-dist. (65 km) — 18 kiranas</div>
+                        </div>
+                        <div class="gold-line" style="margin-top:0.4rem;"></div>
+                        <div style="font-size:0.82rem;color:#d4a847;font-weight:600;">Total reach: ~113 kirana outlets in phase 1</div>
+                    </div>
+                </div>
+                <div class="glass-card reveal" style="background:rgba(239,68,68,0.07);border-color:rgba(239,68,68,0.2);">
+                    <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:#ef4444;font-weight:600;margin-bottom:0.4rem;">⚠ Modi Tea Alert</div>
+                    <p style="font-size:0.83rem;color:#c8c2b8;margin:0;line-height:1.5;">Modi Tea already has <strong style="color:#f87171;">250+ distributors across AP &amp; Telangana</strong>. Map their exact beats in Anantapur district before finalising your distributor — avoid overlap &amp; poaching conflict.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════ SLIDE 5: YESHWANTHPUR DEEP DIVE ═══════════════ -->
+<div class="slide" data-slide="8">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:360px;height:360px;top:-70px;right:-65px;background:#60a5fa;opacity:0.08;"></div>
+        <div class="blob" style="width:250px;height:250px;bottom:-50px;left:-40px;background:#d4a847;opacity:0.08;"></div>
+    </div>
+    <div class="content">
+        <div class="section-label reveal">Anchor 2 — Deep Dive</div>
+        <h2 class="reveal" style="font-family:'Playfair Display',serif;font-size:clamp(1.6rem,3vw,2.4rem);font-weight:700;margin:0 0 0.9rem 0;">Yeshwanthpur, Bengaluru</h2>
+        <p class="reveal" style="font-size:0.8rem;color:#8a8278;margin:-0.4rem 0 0.8rem 0;line-height:1.5;">Yeshwanthpur APMC Yard — a primary Bangalore tea &amp; spice wholesale cluster, beside the Peenya industrial estate; concentrated tea demand in Mathikere, Rajajinagar &amp; worker-housing belts.</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+            <div>
+                <div class="glass-card reveal" style="margin-bottom:0.9rem;">
+                    <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:#60a5fa;font-weight:600;margin-bottom:0.6rem;">Competitors on Ground</div>
+                    <table class="data-table">
+                        <thead><tr><th>Brand</th><th>Price/kg</th><th>Segment</th></tr></thead>
+                        <tbody>
+                            <tr><td>Kanan Devan (Tata)</td><td>₹280–₹480</td><td><span class="badge badge-red">Premium</span></td></tr>
+                            <tr><td>AVT Premium</td><td>₹220–₹380</td><td><span class="badge badge-red">Economy-Dust</span></td></tr>
+                            <tr><td>Brooke Bond Red Label</td><td>₹300–₹520</td><td><span class="badge badge-amber">Mid-Market</span></td></tr>
+                            <tr><td>Wagh Bakri</td><td>₹350–₹550</td><td><span class="badge badge-amber">Mid-Market</span></td></tr>
+                            <tr><td>Gemini (local)</td><td>₹160–₹240</td><td><span class="badge badge-green">Budget</span></td></tr>
+                            <tr><td>Private Label bulk</td><td>₹140–₹200</td><td><span class="badge badge-green">HoReCa</span></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="glass-card reveal accent-left">
+                    <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:#d4a847;font-weight:600;margin-bottom:0.4rem;">Dil Shah Entry Point</div>
+                    <p style="font-size:0.84rem;color:#c8c2b8;margin:0;line-height:1.6;">Lead with <strong style="color:#f0ede6;">5kg &amp; 10kg HoReCa bulk</strong> into canteen operators, dhabas, and construction-site tea stalls in the Peenya industrial belt. Win on cup yield vs AVT. Then push 500g retail once brand is visible.</p>
+                </div>
+            </div>
+            <div>
+                <div class="glass-card reveal" style="margin-bottom:0.9rem;">
+                    <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:#60a5fa;font-weight:600;margin-bottom:0.6rem;">Market Snapshot — Yeshwanthpur</div>
+                    <div style="display:flex;flex-direction:column;gap:0.65rem;font-size:0.83rem;color:#c8c2b8;line-height:1.6;">
+                        <div>🏭 <strong style="color:#f0ede6;">2,200+ factories</strong> in Peenya Industrial Area — captive canteen demand</div>
+                        <div>🚉 <strong style="color:#f0ede6;">Bengaluru City Station:</strong> ~17,500 cups sold/hour at peak</div>
+                        <div>🏪 <strong style="color:#f0ede6;">Yeshwanthpur APMC:</strong> wholesale hub for Karnataka tea trade</div>
+                        <div>🍽️ <strong style="color:#f0ede6;">HoReCa potential:</strong> 600+ small restaurants within 3 km radius</div>
+                        <div>📦 <strong style="color:#f0ede6;">Key wholesale names:</strong> Peenya market traders &amp; APMC commission agents</div>
+                    </div>
+                </div>
+                <div class="glass-card reveal" style="background:rgba(245,158,11,0.07);border-color:rgba(245,158,11,0.2);">
+                    <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:#f59e0b;font-weight:600;margin-bottom:0.4rem;">🎯 Kanan Devan Benchmark</div>
+                    <p style="font-size:0.83rem;color:#c8c2b8;margin:0;line-height:1.5;">Kanan Devan is Karnataka's <strong style="color:#fbbf24;">leading single brand</strong>, owned by Tata (relaunched from Kerala estate). Its strength is <em>origin story &amp; visibility.</em> Beat it with <strong style="color:#fbbf24;">lower price + equal cup strength</strong>.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════ NEW: MODI TEA — THE TEMPLATE ═══════════════ -->
+<div class="slide" data-slide="9">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:360px;height:360px;top:-70px;right:-65px;background:#ef4444;opacity:0.06;"></div>
+        <div class="blob" style="width:250px;height:250px;bottom:-50px;left:-40px;background:#d4a847;opacity:0.08;"></div>
+    </div>
+    <div class="content">
+        <div class="section-label reveal">Our Mirror &amp; Template</div>
+        <h2 class="reveal" style="font-family:'Playfair Display',serif;font-size:clamp(1.5rem,2.8vw,2.3rem);font-weight:700;margin:0 0 0.9rem 0;">The One to Study Closely — Modi Tea</h2>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+            <div>
+                <div class="glass-card reveal" style="margin-bottom:0.9rem;">
+                    <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:#d4a847;font-weight:600;margin-bottom:0.6rem;">The Profile</div>
+                    <div style="font-size:0.84rem;color:#c8c2b8;line-height:1.75;">
+                        <div>🏷️ Brand of <strong style="color:#f0ede6;">Modigold Beverages</strong>, Hyderabad</div>
+                        <div>👨‍👩‍👦 Run by the Modi family, <strong style="color:#f0ede6;">originally from Assam</strong></div>
+                        <div>📅 Launched <strong style="color:#f0ede6;">1991</strong></div>
+                        <div>🏪 <strong style="color:#f0ede6;">250+ retail channels</strong> across AP &amp; Telangana</div>
+                        <div>📍 Branches in <strong style="color:#f0ede6;">Bangalore, Kurnool &amp; Parbhani</strong></div>
+                        <div>🧩 Three sub-brands + does <strong style="color:#f0ede6;">private label</strong></div>
+                        <div>💬 Positions on "quality at an affordable price"</div>
+                    </div>
+                    <div class="gold-line" style="margin-top:0.6rem;"></div>
+                    <p style="font-size:0.82rem;color:#c8c2b8;margin:0.5rem 0 0 0;line-height:1.55;">It sits right on top of <strong style="color:#f87171;">both our anchors</strong> — through Kurnool near Guntakal, and through its Bangalore branch.</p>
+                </div>
+            </div>
+            <div>
+                <div class="glass-card reveal" style="background:rgba(34,197,94,0.08);border-color:rgba(34,197,94,0.25);margin-bottom:0.9rem;">
+                    <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:#22c55e;font-weight:700;margin-bottom:0.45rem;">Why This Matters</div>
+                    <p style="font-size:0.9rem;color:#f0ede6;margin:0 0 0.55rem 0;line-height:1.6;font-weight:500;">Modi proves the exact model works in our exact geography.</p>
+                    <p style="font-size:0.84rem;color:#c8c2b8;margin:0;line-height:1.6;">We do <strong style="color:#4ade80;">not</strong> need 250 distributors to win Guntakal. We need <strong style="color:#f0ede6;">three to five committed ones in our own backyard</strong>. Modi is the benchmark to match, not a giant to fear.</p>
+                </div>
+                <div class="glass-card reveal accent-left">
+                    <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:#d4a847;font-weight:600;margin-bottom:0.5rem;">Our Home Advantage Over Modi</div>
+                    <div style="display:flex;flex-wrap:wrap;gap:0.5rem;">
+                        <span class="badge badge-gold">Local blending</span>
+                        <span class="badge badge-gold">Our own godown</span>
+                        <span class="badge badge-gold">Shorter logistics</span>
+                        <span class="badge badge-gold">Genuinely local brand</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════ SLIDE 6: COMPETITOR HEATMAP ═══════════════ -->
+<div class="slide" data-slide="10">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:340px;height:340px;top:-65px;right:-60px;background:#d4a847;opacity:0.09;"></div>
+        <div class="blob" style="width:230px;height:230px;bottom:-45px;left:-35px;background:#8b6914;opacity:0.08;"></div>
+    </div>
+    <div class="content">
+        <div class="section-label reveal">Competitive Intelligence</div>
+        <h2 class="reveal" style="font-family:'Playfair Display',serif;font-size:clamp(1.5rem,2.8vw,2.2rem);font-weight:700;margin:0 0 0.9rem 0;">Brand Strength Matrix — South India</h2>
+        <div class="reveal" style="overflow-x:auto;">
+            <div style="min-width:640px;">
+                <div style="display:grid;grid-template-columns:130px repeat(6,1fr);gap:4px;font-size:0.72rem;">
+                    <!-- Header -->
+                    <div style="color:#8a8278;padding:0.4rem 0.2rem;"></div>
+                    <div style="color:#d4a847;font-weight:700;text-align:center;padding:0.4rem 0.2rem;">Distribution</div>
+                    <div style="color:#d4a847;font-weight:700;text-align:center;padding:0.4rem 0.2rem;">Price Value</div>
+                    <div style="color:#d4a847;font-weight:700;text-align:center;padding:0.4rem 0.2rem;">Cup Yield</div>
+                    <div style="color:#d4a847;font-weight:700;text-align:center;padding:0.4rem 0.2rem;">Brand Recall</div>
+                    <div style="color:#d4a847;font-weight:700;text-align:center;padding:0.4rem 0.2rem;">AP/TS Depth</div>
+                    <div style="color:#d4a847;font-weight:700;text-align:center;padding:0.4rem 0.2rem;">KA Depth</div>
+                    <!-- Brooke Bond -->
+                    <div style="color:#f0ede6;font-weight:600;padding:0.35rem 0.2rem;display:flex;align-items:center;">Brooke Bond</div>
+                    <div class="hm-cell hm-5">★★★★★</div><div class="hm-cell hm-3">★★★</div><div class="hm-cell hm-3">★★★</div><div class="hm-cell hm-5">★★★★★</div><div class="hm-cell hm-4">★★★★</div><div class="hm-cell hm-4">★★★★</div>
+                    <!-- Tata Chakra -->
+                    <div style="color:#f0ede6;font-weight:600;padding:0.35rem 0.2rem;display:flex;align-items:center;">Tata Chakra</div>
+                    <div class="hm-cell hm-4">★★★★</div><div class="hm-cell hm-3">★★★</div><div class="hm-cell hm-4">★★★★</div><div class="hm-cell hm-5">★★★★★</div><div class="hm-cell hm-4">★★★★</div><div class="hm-cell hm-3">★★★</div>
+                    <!-- Kanan Devan -->
+                    <div style="color:#f0ede6;font-weight:600;padding:0.35rem 0.2rem;display:flex;align-items:center;">Kanan Devan</div>
+                    <div class="hm-cell hm-3">★★★</div><div class="hm-cell hm-2">★★</div><div class="hm-cell hm-3">★★★</div><div class="hm-cell hm-4">★★★★</div><div class="hm-cell hm-2">★★</div><div class="hm-cell hm-5">★★★★★</div>
+                    <!-- AVT -->
+                    <div style="color:#f0ede6;font-weight:600;padding:0.35rem 0.2rem;display:flex;align-items:center;">AVT Premium</div>
+                    <div class="hm-cell hm-3">★★★</div><div class="hm-cell hm-4">★★★★</div><div class="hm-cell hm-3">★★★</div><div class="hm-cell hm-3">★★★</div><div class="hm-cell hm-3">★★★</div><div class="hm-cell hm-4">★★★★</div>
+                    <!-- Modi Tea -->
+                    <div style="color:#f87171;font-weight:700;padding:0.35rem 0.2rem;display:flex;align-items:center;">Modi Tea ⚠️</div>
+                    <div class="hm-cell hm-4">★★★★</div><div class="hm-cell hm-5">★★★★★</div><div class="hm-cell hm-4">★★★★</div><div class="hm-cell hm-3">★★★</div><div class="hm-cell hm-5">★★★★★</div><div class="hm-cell hm-2">★★</div>
+                    <!-- Ganga CTC -->
+                    <div style="color:#f0ede6;font-weight:600;padding:0.35rem 0.2rem;display:flex;align-items:center;">Ganga CTC</div>
+                    <div class="hm-cell hm-3">★★★</div><div class="hm-cell hm-5">★★★★★</div><div class="hm-cell hm-2">★★</div><div class="hm-cell hm-2">★★</div><div class="hm-cell hm-4">★★★★</div><div class="hm-cell hm-1">★</div>
+                    <!-- Dil Shah -->
+                    <div style="color:#d4a847;font-weight:700;padding:0.35rem 0.2rem;display:flex;align-items:center;">Dil Shah 🎯</div>
+                    <div class="hm-cell hm-1">★</div><div class="hm-cell hm-5">★★★★★</div><div class="hm-cell hm-5">★★★★★</div><div class="hm-cell hm-1">★</div><div class="hm-cell hm-1">★</div><div class="hm-cell hm-1">★</div>
+                </div>
+            </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-top:0.85rem;">
+            <div class="reveal" style="display:flex;gap:0.5rem;flex-wrap:wrap;align-items:center;">
+                <div style="font-size:0.72rem;color:#8a8278;">Scale:</div>
+                <div style="display:flex;align-items:center;gap:0.3rem;font-size:0.72rem;"><div style="width:12px;height:12px;border-radius:3px;background:#166534;"></div><span style="color:#c8c2b8;">★★★★★ = Very Strong</span></div>
+                <div style="display:flex;align-items:center;gap:0.3rem;font-size:0.72rem;"><div style="width:12px;height:12px;border-radius:3px;background:#d97706;"></div><span style="color:#c8c2b8;">★★★ = Moderate</span></div>
+                <div style="display:flex;align-items:center;gap:0.3rem;font-size:0.72rem;"><div style="width:12px;height:12px;border-radius:3px;background:#991b1b;"></div><span style="color:#c8c2b8;">★ = Weak</span></div>
+            </div>
+            <div class="reveal" style="font-size:0.8rem;color:#c8c2b8;padding:0.5rem 0.75rem;background:rgba(212,168,71,0.07);border-radius:8px;border:1px solid rgba(212,168,71,0.15);">
+                <strong style="color:#d4a847;">Insight:</strong> Dil Shah's edge = <strong style="color:#f0ede6;">superior cup yield + best value</strong>. Distribution is the only gap. Fill that first.
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════ NEW: HOW BRANDS SELL THEMSELVES + VALUE TIER ═══════════════ -->
+<div class="slide" data-slide="11">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:340px;height:340px;top:-65px;right:-60px;background:#d4a847;opacity:0.09;"></div>
+        <div class="blob" style="width:230px;height:230px;bottom:-45px;left:-35px;background:#8b6914;opacity:0.08;"></div>
+    </div>
+    <div class="content">
+        <div class="section-label reveal">Competitive Intelligence — Positioning</div>
+        <h2 class="reveal" style="font-family:'Playfair Display',serif;font-size:clamp(1.4rem,2.6vw,2.1rem);font-weight:700;margin:0 0 0.5rem 0;">How Each Brand Sells Itself</h2>
+        <p class="reveal" style="font-size:0.82rem;color:#8a8278;margin:0 0 0.8rem 0;">Do not fight the giants on advertising. Study them, then beat the regional players on blend consistency, availability, cost per cup and servicing.</p>
+        <div style="display:grid;grid-template-columns:1.25fr 1fr;gap:1rem;">
+            <div class="glass-card reveal">
+                <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:#d4a847;font-weight:600;margin-bottom:0.5rem;">National Giants — Respect, Don't Fight Head-On</div>
+                <table class="data-table">
+                    <thead><tr><th>Brand</th><th>Where strong</th><th>How it sells itself</th></tr></thead>
+                    <tbody>
+                        <tr><td style="color:#f0ede6;">Tata Gemini</td><td>AP &amp; TS leader</td><td>"Strong tea for strong family bonds," since 1978, Kalamkari pack</td></tr>
+                        <tr><td style="color:#f0ede6;">Tata Chakra Gold</td><td>No.2 South India</td><td>Strong, lingering taste; heavy Telugu marketing, Rashmika Mandanna</td></tr>
+                        <tr><td style="color:#f0ede6;">Tata Kanan Devan</td><td>Karnataka dust leader</td><td>"Pure and natural" — the brand to watch in Bangalore</td></tr>
+                        <tr><td style="color:#f0ede6;">Tata Agni</td><td>Entry price, many states</td><td>"10% extra strong leaves" — the loose-to-branded converter</td></tr>
+                        <tr><td style="color:#f0ede6;">Brooke Bond 3 Roses</td><td>Strong across the South</td><td>"Perfect colour, taste and strength"</td></tr>
+                        <tr><td style="color:#f0ede6;">AVT Premium</td><td>Kerala 45-50%, TN No.2</td><td>Characteristic sharpness — our direct dust rival</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div>
+                <div class="glass-card reveal" style="background:rgba(212,168,71,0.08);border-color:rgba(212,168,71,0.22);margin-bottom:0.8rem;">
+                    <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:#d4a847;font-weight:700;margin-bottom:0.4rem;">The Real Battleground — Regional &amp; Value Tier</div>
+                    <div style="font-size:0.81rem;color:#c8c2b8;line-height:1.6;">
+                        <div style="margin-bottom:0.4rem;">🟠 <strong style="color:#f0ede6;">Ganga</strong> (Andhra Sales Corp, Hyderabad) — Assam CTC dust in ₹5/₹10 sachets &amp; 1kg. Direct sachet-tier rival.</div>
+                        <div style="margin-bottom:0.4rem;">🟠 <strong style="color:#f0ede6;">Andhra Tea Corporation</strong> (Vizianagaram, since 1983) — regional dust &amp; hotel-mix. <em>Not</em> the same as Andhra Sales Corp — don't confuse the two.</div>
+                        <div>🟢 <strong style="color:#f0ede6;">Local unbranded bulk dust</strong> — wobbles batch to batch. That inconsistency is exactly the gap our blending + godown fill.</div>
+                    </div>
+                </div>
+                <div class="glass-card reveal accent-left">
+                    <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:#d4a847;font-weight:600;margin-bottom:0.45rem;">Named Players to Map on the Ground</div>
+                    <div style="font-size:0.78rem;color:#c8c2b8;line-height:1.55;">
+                        <div><strong style="color:#f0ede6;">Guntakal belt:</strong> S.P., Surya Chandra, Manjeeri (regional dust), via Andhra Sales Corp wholesalers.</div>
+                        <div style="margin-top:0.3rem;"><strong style="color:#f0ede6;">Bangalore belt:</strong> New Standard Tea Centre (est. 1987), the Mamulpet &amp; Malleshwaram powder trade, Modi's Bangalore branch.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════ SLIDE 7: PRICE LADDER + CUP YIELD ═══════════════ -->
+<div class="slide" data-slide="12">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:360px;height:360px;top:-70px;right:-65px;background:#22c55e;opacity:0.07;"></div>
+        <div class="blob" style="width:240px;height:240px;bottom:-45px;left:-35px;background:#d4a847;opacity:0.08;"></div>
+    </div>
+    <div class="content">
+        <div class="section-label reveal">Pricing Intelligence</div>
+        <h2 class="reveal" style="font-family:'Playfair Display',serif;font-size:clamp(1.5rem,2.8vw,2.2rem);font-weight:700;margin:0 0 0.9rem 0;">Price Ladder &amp; Cup Yield Comparison</h2>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;">
+            <div>
+                <div class="glass-card reveal">
+                    <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:#d4a847;font-weight:600;margin-bottom:0.8rem;">Retail Price Per Kg — South India Market</div>
+                    <div style="display:flex;flex-direction:column;gap:0.55rem;" id="price-bars">
+                        <div>
+                            <div style="display:flex;justify-content:space-between;font-size:0.78rem;margin-bottom:0.25rem;">
+                                <span style="color:#c8c2b8;">Ganga CTC Sachet</span><span style="color:#ef4444;">₹130–160</span>
+                            </div>
+                            <div class="bar-track"><div class="bar-fill red" data-width="22"></div></div>
+                        </div>
+                        <div>
+                            <div style="display:flex;justify-content:space-between;font-size:0.78rem;margin-bottom:0.25rem;">
+                                <span style="color:#c8c2b8;">Gemini Tea</span><span style="color:#f59e0b;">₹150–200</span>
+                            </div>
+                            <div class="bar-track"><div class="bar-fill amber" data-width="28"></div></div>
+                        </div>
+                        <div>
+                            <div style="display:flex;justify-content:space-between;font-size:0.78rem;margin-bottom:0.25rem;">
+                                <span style="color:#c8c2b8;">Modi Tea</span><span style="color:#f59e0b;">₹180–260</span>
+                            </div>
+                            <div class="bar-track"><div class="bar-fill amber" data-width="35"></div></div>
+                        </div>
+                        <div>
+                            <div style="display:flex;justify-content:space-between;font-size:0.78rem;margin-bottom:0.25rem;">
+                                <span style="color:#c8c2b8;">AVT Premium</span><span style="color:#f59e0b;">₹220–380</span>
+                            </div>
+                            <div class="bar-track"><div class="bar-fill amber" data-width="45"></div></div>
+                        </div>
+                        <div>
+                            <div style="display:flex;justify-content:space-between;font-size:0.78rem;margin-bottom:0.25rem;">
+                                <span style="color:#d4a847;font-weight:700;">✦ Dil Shah (target)</span><span style="color:#d4a847;font-weight:700;">₹240–320</span>
+                            </div>
+                            <div class="bar-track" style="background:rgba(212,168,71,0.15);"><div class="bar-fill gold" data-width="52"></div></div>
+                        </div>
+                        <div>
+                            <div style="display:flex;justify-content:space-between;font-size:0.78rem;margin-bottom:0.25rem;">
+                                <span style="color:#c8c2b8;">Brooke Bond 3 Roses</span><span style="color:#60a5fa;">₹220–320</span>
+                            </div>
+                            <div class="bar-track"><div class="bar-fill blue" data-width="52"></div></div>
+                        </div>
+                        <div>
+                            <div style="display:flex;justify-content:space-between;font-size:0.78rem;margin-bottom:0.25rem;">
+                                <span style="color:#c8c2b8;">Tata Chakra Gold</span><span style="color:#60a5fa;">₹240–350</span>
+                            </div>
+                            <div class="bar-track"><div class="bar-fill blue" data-width="58"></div></div>
+                        </div>
+                        <div>
+                            <div style="display:flex;justify-content:space-between;font-size:0.78rem;margin-bottom:0.25rem;">
+                                <span style="color:#c8c2b8;">Kanan Devan</span><span style="color:#22c55e;">₹280–480</span>
+                            </div>
+                            <div class="bar-track"><div class="bar-fill green" data-width="70"></div></div>
+                        </div>
+                        <div>
+                            <div style="display:flex;justify-content:space-between;font-size:0.78rem;margin-bottom:0.25rem;">
+                                <span style="color:#c8c2b8;">Wagh Bakri</span><span style="color:#22c55e;">₹350–550</span>
+                            </div>
+                            <div class="bar-track"><div class="bar-fill green" data-width="82"></div></div>
+                        </div>
+                    </div>
+                    <div style="font-size:0.7rem;color:#8a8278;margin-top:0.6rem;">Source: Primegold Tea, market surveys. Ranges = retail shelf price.</div>
+                </div>
+            </div>
+            <div>
+                <div class="glass-card reveal" style="margin-bottom:0.9rem;">
+                    <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:#22c55e;font-weight:600;margin-bottom:0.7rem;">Cup Yield Per Kg (CTC Dust Grade)</div>
+                    <div style="display:flex;flex-direction:column;gap:0.5rem;" id="cup-bars">
+                        <div>
+                            <div style="display:flex;justify-content:space-between;font-size:0.78rem;margin-bottom:0.2rem;">
+                                <span style="color:#c8c2b8;">Ganga CTC Sachet</span><span style="color:#c8c2b8;">~250 cups/kg</span>
+                            </div>
+                            <div class="bar-track"><div class="bar-fill red" data-width="40"></div></div>
+                        </div>
+                        <div>
+                            <div style="display:flex;justify-content:space-between;font-size:0.78rem;margin-bottom:0.2rem;">
+                                <span style="color:#c8c2b8;">Brooke Bond / Tata</span><span style="color:#c8c2b8;">~320 cups/kg</span>
+                            </div>
+                            <div class="bar-track"><div class="bar-fill blue" data-width="62"></div></div>
+                        </div>
+                        <div>
+                            <div style="display:flex;justify-content:space-between;font-size:0.78rem;margin-bottom:0.2rem;">
+                                <span style="color:#d4a847;font-weight:700;">✦ Dil Shah Assam CTC</span><span style="color:#d4a847;font-weight:700;">~400 cups/kg</span>
+                            </div>
+                            <div class="bar-track" style="background:rgba(212,168,71,0.15);"><div class="bar-fill gold" data-width="100"></div></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="glass-card reveal" style="background:rgba(34,197,94,0.07);border-color:rgba(34,197,94,0.2);">
+                    <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:#22c55e;font-weight:600;margin-bottom:0.5rem;">💰 The ₹22,500/Month Saving Argument</div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;font-size:0.8rem;margin-bottom:0.6rem;">
+                        <div style="background:rgba(239,68,68,0.1);border-radius:8px;padding:0.5rem;">
+                            <div style="color:#f87171;font-weight:600;margin-bottom:0.2rem;">Rival brand (320 cups/kg)</div>
+                            <div style="color:#c8c2b8;">150 cups/day × ₹5/cup cost</div>
+                            <div style="color:#c8c2b8;">= ₹750/day = <strong style="color:#f87171;">₹22,500/mo</strong></div>
+                        </div>
+                        <div style="background:rgba(34,197,94,0.1);border-radius:8px;padding:0.5rem;">
+                            <div style="color:#4ade80;font-weight:600;margin-bottom:0.2rem;">Dil Shah (400 cups/kg)</div>
+                            <div style="color:#c8c2b8;">150 cups/day × ₹4/cup cost</div>
+                            <div style="color:#c8c2b8;">= ₹600/day = <strong style="color:#4ade80;">₹18,000/mo</strong></div>
+                        </div>
+                    </div>
+                    <div style="font-size:0.78rem;color:#c8c2b8;text-align:center;padding:0.35rem;background:rgba(34,197,94,0.1);border-radius:6px;"><strong style="color:#4ade80;">Saving = ₹4,500/month for every tea stall</strong></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════ NEW: EXACT-PACK PRICE LADDER + CORRIDOR ═══════════════ -->
+<div class="slide" data-slide="13">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:360px;height:360px;top:-70px;right:-65px;background:#22c55e;opacity:0.07;"></div>
+        <div class="blob" style="width:240px;height:240px;bottom:-45px;left:-35px;background:#d4a847;opacity:0.08;"></div>
+    </div>
+    <div class="content">
+        <div class="section-label reveal">Pricing, With Pack Sizes</div>
+        <h2 class="reveal" style="font-family:'Playfair Display',serif;font-size:clamp(1.35rem,2.4vw,1.95rem);font-weight:700;margin:0 0 0.35rem 0;">The Price Ladder — Exact Packs, Real Per-Kg</h2>
+        <p class="reveal" style="font-size:0.77rem;color:#8a8278;margin:0 0 0.6rem 0;">Every line shows its exact pack so nothing misleads; the per-kg column lets you compare like with like. 2026 online &amp; wholesale prices — check against shelf prices in the field.</p>
+        <div style="display:grid;grid-template-columns:1.4fr 1fr;gap:1rem;">
+            <div class="glass-card reveal" style="padding:0.55rem 0.9rem;">
+                <table class="data-table" id="pl-tbl">
+                    <thead><tr><th>Brand &amp; exact pack</th><th>Price ₹</th><th>Per kg ₹</th><th>Tier</th></tr></thead>
+                    <tbody>
+                        <tr><td>Ganga Assam CTC Dust, ₹5 / ₹10 sachet</td><td>5 / 10</td><td>—</td><td><span class="badge badge-red">Entry / rural</span></td></tr>
+                        <tr><td>Tata Agni leaf, 250 g</td><td>65</td><td>260</td><td><span class="badge badge-amber">Entry</span></td></tr>
+                        <tr><td>Bulk value Assam dust, per 1 kg</td><td>130–220</td><td>130–220</td><td><span class="badge badge-amber">Commodity</span></td></tr>
+                        <tr><td>AVT Premium, 1 kg</td><td>325</td><td>325</td><td><span class="badge badge-gold">Value-premium</span></td></tr>
+                        <tr><td>Bulk premium / export dust, 1 kg</td><td>340–410</td><td>340–410</td><td><span class="badge badge-gold">Premium B2B</span></td></tr>
+                        <tr><td>Modi Gold Premium, 1 kg</td><td>420</td><td>420</td><td><span class="badge badge-gold">Value-premium</span></td></tr>
+                        <tr><td>Tata Tea Gold, 1 kg</td><td>454–493</td><td>454–493</td><td><span class="badge" style="background:rgba(96,165,250,0.18);color:#93c5fd;border:1px solid rgba(96,165,250,0.25);">Premium</span></td></tr>
+                        <tr><td>Modi Premium Dust, 1 kg</td><td>500</td><td>500</td><td><span class="badge" style="background:rgba(96,165,250,0.18);color:#93c5fd;border:1px solid rgba(96,165,250,0.25);">Premium</span></td></tr>
+                        <tr><td>Tata Gemini, 250 g / 100 g</td><td>135 / 55</td><td>540 / 550</td><td><span class="badge badge-green">Mass-premium</span></td></tr>
+                        <tr><td>Wagh Bakri Premium Leaf, 1 kg</td><td>554</td><td>554</td><td><span class="badge" style="background:rgba(96,165,250,0.18);color:#93c5fd;border:1px solid rgba(96,165,250,0.25);">Premium</span></td></tr>
+                        <tr><td>Tata Chakra Gold Dust, 250 g</td><td>199</td><td>796</td><td><span class="badge badge-green">Premium</span></td></tr>
+                        <tr><td>Brooke Bond 3 Roses Dust, 250 g / 1 kg</td><td>220 / 720</td><td>880 / 720</td><td><span class="badge badge-green">Premium</span></td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div>
+                <div class="glass-card reveal" style="background:rgba(212,168,71,0.1);border-color:rgba(212,168,71,0.28);margin-bottom:0.85rem;">
+                    <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:#d4a847;font-weight:700;margin-bottom:0.45rem;">Our Pricing Room</div>
+                    <div class="stat-big grad-text glow-pulse" style="font-size:clamp(1.8rem,3.5vw,2.6rem);">₹300–550<span style="font-size:1rem;color:#8a8278;font-weight:600;"> / kg</span></div>
+                    <p style="font-size:0.84rem;color:#c8c2b8;margin:0.55rem 0 0 0;line-height:1.6;">Above commodity loose dust, at or just under Tata Gemini and Chakra Gold. In that band the <strong style="color:#e8c97a;">one-spoon-does-five</strong> argument is most persuasive — a slightly higher price per kilo still means a <strong style="color:#f0ede6;">lower cost per cup</strong>.</p>
+                </div>
+                <div class="glass-card reveal" style="background:rgba(245,158,11,0.08);border-color:rgba(245,158,11,0.22);">
+                    <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:#f59e0b;font-weight:600;margin-bottom:0.4rem;">⚠ Reconcile</div>
+                    <p style="font-size:0.81rem;color:#c8c2b8;margin:0;line-height:1.55;">This ₹300–550 corridor refines the earlier <strong style="color:#fbbf24;">₹240–320</strong> sweet-spot. Settle the final band against actual Guntakal &amp; Bangalore shelf prices before printing packs.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════ SLIDE 8: DISTRIBUTOR MODEL ═══════════════ -->
+<div class="slide" data-slide="14">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:350px;height:350px;top:-65px;right:-60px;background:#d4a847;opacity:0.09;"></div>
+        <div class="blob" style="width:230px;height:230px;bottom:-45px;left:-35px;background:#8b6914;opacity:0.07;"></div>
+    </div>
+    <div class="content">
+        <div class="section-label reveal">Distribution Architecture</div>
+        <h2 class="reveal" style="font-family:'Playfair Display',serif;font-size:clamp(1.5rem,2.8vw,2.2rem);font-weight:700;margin:0 0 0.9rem 0;">How the Supply Chain Should Work</h2>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+            <div>
+                <!-- Chain diagram -->
+                <div class="glass-card reveal" style="margin-bottom:0.9rem;">
+                    <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:#d4a847;font-weight:600;margin-bottom:0.75rem;">Distribution Chain</div>
+                    <div style="display:flex;flex-direction:column;gap:0;position:relative;padding-left:2rem;">
+                        <div class="tl-line"></div>
+                        <div style="margin-bottom:0.8rem;position:relative;">
+                            <div class="tl-dot" style="position:absolute;left:-1.65rem;top:4px;"></div>
+                            <div style="font-weight:700;font-size:0.9rem;color:#d4a847;">Dil Shah Factory (Assam CTC Source)</div>
+                            <div style="font-size:0.78rem;color:#8a8278;">Guwahati blend → branded packaging</div>
+                        </div>
+                        <div style="margin-bottom:0.8rem;position:relative;">
+                            <div class="tl-dot" style="position:absolute;left:-1.65rem;top:4px;"></div>
+                            <div style="font-weight:700;font-size:0.9rem;color:#f0ede6;">Master Distributor (per city)</div>
+                            <div style="font-size:0.78rem;color:#8a8278;">Investment: ₹1L–₹2L | Margin: 8–10% | Exclusivity: district</div>
+                        </div>
+                        <div style="margin-bottom:0.8rem;position:relative;">
+                            <div class="tl-dot" style="position:absolute;left:-1.65rem;top:4px;"></div>
+                            <div style="font-weight:700;font-size:0.9rem;color:#f0ede6;">Sub-Distributor / Stockist (per mandal)</div>
+                            <div style="font-size:0.78rem;color:#8a8278;">Investment: ₹30k–₹75k | Margin: 5–6% | Coverage: 15–30 shops</div>
+                        </div>
+                        <div style="margin-bottom:0.8rem;position:relative;">
+                            <div class="tl-dot" style="position:absolute;left:-1.65rem;top:4px;"></div>
+                            <div style="font-weight:700;font-size:0.9rem;color:#f0ede6;">Kirana Retailer</div>
+                            <div style="font-size:0.78rem;color:#8a8278;">Margin: 10–12% | Reorder cycle: weekly</div>
+                        </div>
+                        <div style="position:relative;">
+                            <div class="tl-dot" style="position:absolute;left:-1.65rem;top:4px;background:#22c55e;box-shadow:0 0 10px rgba(34,197,94,0.7);"></div>
+                            <div style="font-weight:700;font-size:0.9rem;color:#4ade80;">End Consumer</div>
+                            <div style="font-size:0.78rem;color:#8a8278;">Retail pack: 250g, 500g, 1kg | Sachet: ₹5, ₹10</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div class="glass-card reveal" style="margin-bottom:0.9rem;">
+                    <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:#d4a847;font-weight:600;margin-bottom:0.6rem;">Modi Tea vs Dil Shah — Distributor Terms</div>
+                    <table class="data-table">
+                        <thead><tr><th>Parameter</th><th>Modi Tea</th><th>Dil Shah</th></tr></thead>
+                        <tbody>
+                            <tr><td>Min. Investment</td><td style="color:#c8c2b8;">₹50k–₹2L</td><td style="color:#d4a847;">₹1L–₹2L</td></tr>
+                            <tr><td>Distributor Margin</td><td style="color:#c8c2b8;">~10%</td><td style="color:#d4a847;">10–12% (offer more)</td></tr>
+                            <tr><td>Network Size (AP/TS)</td><td style="color:#ef4444;">250+ distributors</td><td style="color:#f59e0b;">0 (Day 1)</td></tr>
+                            <tr><td>Private Label Option</td><td style="color:#22c55e;">Yes</td><td style="color:#22c55e;">Yes (advantage)</td></tr>
+                            <tr><td>Cup Yield</td><td style="color:#c8c2b8;">~340 cups/kg</td><td style="color:#22c55e;">~400 cups/kg</td></tr>
+                            <tr><td>Brand Recall (AP)</td><td style="color:#22c55e;">High</td><td style="color:#ef4444;">Low (build needed)</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="glass-card reveal" style="background:rgba(212,168,71,0.07);border-color:rgba(212,168,71,0.2);">
+                    <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:#d4a847;font-weight:600;margin-bottom:0.45rem;">GetDistributors.com Profile</div>
+                    <p style="font-size:0.82rem;color:#c8c2b8;margin:0;line-height:1.55;">Dil Shah / Shri Laxmi Tea Company is <strong style="color:#f0ede6;">already live on GetDistributors.com</strong> seeking partners (₹1–2L investment range). This listing should be the first call-to-action in every city — direct potential distributors to the live profile immediately.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════ NEW: DISTRIBUTOR ECONOMICS ═══════════════ -->
+<div class="slide" data-slide="15">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:350px;height:350px;top:-65px;right:-60px;background:#d4a847;opacity:0.09;"></div>
+        <div class="blob" style="width:230px;height:230px;bottom:-45px;left:-35px;background:#8b6914;opacity:0.07;"></div>
+    </div>
+    <div class="content">
+        <div class="section-label reveal">The Money Behind the Beat</div>
+        <h2 class="reveal" style="font-family:'Playfair Display',serif;font-size:clamp(1.5rem,2.8vw,2.2rem);font-weight:700;margin:0 0 0.9rem 0;">Distributor Economics — Go Deep Before Wide</h2>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+            <div>
+                <div class="glass-card reveal" style="margin-bottom:0.9rem;">
+                    <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:#d4a847;font-weight:600;margin-bottom:0.5rem;">Where the Margin Really Lands</div>
+                    <table class="data-table">
+                        <thead><tr><th>Layer</th><th>Typical margin</th><th>Reality</th></tr></thead>
+                        <tbody>
+                            <tr><td style="color:#f0ede6;">Distributor</td><td>~5–12%</td><td>Net after credit, logistics &amp; scheme leakage is often only <strong style="color:#f87171;">2–3%</strong></td></tr>
+                            <tr><td style="color:#f0ede6;">Retailer / kirana</td><td>~10–30%</td><td>High-frequency, low-ticket — sits at the value end</td></tr>
+                        </tbody>
+                    </table>
+                    <p style="font-size:0.8rem;color:#8a8278;margin:0.55rem 0 0 0;line-height:1.5;">The salesman who walks the beat between distributor and shop is the quiet engine most brands under-resource.</p>
+                </div>
+                <div class="glass-card reveal" style="background:rgba(239,68,68,0.08);border-color:rgba(239,68,68,0.22);">
+                    <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:#ef4444;font-weight:600;margin-bottom:0.4rem;">⚠ Working Capital Is the Real Constraint</div>
+                    <p style="font-size:0.84rem;color:#c8c2b8;margin:0;line-height:1.6;"><strong style="color:#f0ede6;">₹8–15 lakh</strong> can be locked in stock + receivables per distributor. A new state can tie up <strong style="color:#f87171;">₹30–40 lakh</strong> once distributor credit and shop schemes are counted. This is the trap — and the reason we <strong style="color:#f0ede6;">go deep before going wide.</strong></p>
+                </div>
+            </div>
+            <div>
+                <div class="glass-card reveal accent-left" style="margin-bottom:0.9rem;">
+                    <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:#d4a847;font-weight:600;margin-bottom:0.5rem;">How Suraj Replicates the Modi Model</div>
+                    <div style="font-size:0.83rem;color:#c8c2b8;line-height:1.7;">
+                        <div>① Suraj acts as <strong style="color:#f0ede6;">lead distributor / super-stockist</strong> for the Guntakal–Anantapur belt.</div>
+                        <div>② Appoints <strong style="color:#f0ede6;">sub-distributors by mandal cluster</strong> — Gooty, Pamidi, Uravakonda — each running kirana &amp; hotel beats.</div>
+                        <div>③ Margins set working <strong style="color:#f0ede6;">down from the pack price</strong>, with strict credit tiers: cash on delivery for small outlets, short credit only for proven accounts.</div>
+                        <div>④ <strong style="color:#f0ede6;">Private-label runs</strong> fill godown capacity and help fund the network — exactly as Modi does.</div>
+                    </div>
+                </div>
+                <div class="glass-card reveal" style="background:rgba(34,197,94,0.07);border-color:rgba(34,197,94,0.2);">
+                    <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:#22c55e;font-weight:600;margin-bottom:0.4rem;">The Link to Digital</div>
+                    <p style="font-size:0.83rem;color:#c8c2b8;margin:0;line-height:1.55;">A distributor running on WhatsApp orders and a simple beat app needs <strong style="color:#4ade80;">far less working capital tied up in guesswork</strong>, because stock matches real demand. The model and the digital layer reinforce each other.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════ SLIDE 9: DIGITAL + SALES TOOLS ═══════════════ -->
+<div class="slide" data-slide="16">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:340px;height:340px;top:-60px;right:-55px;background:#60a5fa;opacity:0.08;"></div>
+        <div class="blob" style="width:230px;height:230px;bottom:-40px;left:-35px;background:#d4a847;opacity:0.08;"></div>
+    </div>
+    <div class="content">
+        <div class="section-label reveal">Go-to-Market</div>
+        <h2 class="reveal" style="font-family:'Playfair Display',serif;font-size:clamp(1.5rem,2.8vw,2.2rem);font-weight:700;margin:0 0 1rem 0;">Digital &amp; Sales Execution Playbook</h2>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.9rem;">
+            <div class="glass-card reveal">
+                <div style="font-size:1.6rem;margin-bottom:0.5rem;">📱</div>
+                <div style="font-weight:700;font-size:0.92rem;color:#f0ede6;margin-bottom:0.4rem;">WhatsApp Order System</div>
+                <p style="font-size:0.8rem;color:#c8c2b8;margin:0;line-height:1.6;">Create a dedicated <strong style="color:#d4a847;">WhatsApp Business catalog</strong> per distributor with all SKUs. Retailers reorder via a pinned catalog link — no phone tag, no missed orders. Use <em>broadcast lists</em> for price updates.</p>
+            </div>
+            <div class="glass-card reveal">
+                <div style="font-size:1.6rem;margin-bottom:0.5rem;">🔁</div>
+                <div style="font-weight:700;font-size:0.92rem;color:#f0ede6;margin-bottom:0.4rem;">Automated Reorder Reminders</div>
+                <p style="font-size:0.8rem;color:#c8c2b8;margin:0;line-height:1.6;">Track first order date per retailer. Set <strong style="color:#d4a847;">Day-6 WhatsApp reminder</strong>: <em>"Time to restock Dil Shah? Same-day delivery available."</em> Reduces stockout rate and builds habitual purchase.</p>
+            </div>
+            <div class="glass-card reveal">
+                <div style="font-size:1.6rem;margin-bottom:0.5rem;">☕</div>
+                <div style="font-weight:700;font-size:0.92rem;color:#f0ede6;margin-bottom:0.4rem;">Cup Yield Demo Video</div>
+                <p style="font-size:0.8rem;color:#c8c2b8;margin:0;line-height:1.6;">A 60-second Reels/WhatsApp video showing <strong style="color:#d4a847;">1kg making 400 cups</strong> vs rival brand making 300. Targets tea-stall owners directly — pure ROI argument, no fluffy brand story needed.</p>
+            </div>
+            <div class="glass-card reveal">
+                <div style="font-size:1.6rem;margin-bottom:0.5rem;">📊</div>
+                <div style="font-weight:700;font-size:0.92rem;color:#f0ede6;margin-bottom:0.4rem;">SFA (Sales Force App)</div>
+                <p style="font-size:0.8rem;color:#c8c2b8;margin:0;line-height:1.6;">Even a basic <strong style="color:#d4a847;">free app like BeatRoute or FieldSense</strong> lets field reps log each shop visit, stock level, and competitor price. Data feeds weekly decisions on price, SKU mix, and rep performance.</p>
+            </div>
+            <div class="glass-card reveal">
+                <div style="font-size:1.6rem;margin-bottom:0.5rem;">📦</div>
+                <div style="font-weight:700;font-size:0.92rem;color:#f0ede6;margin-bottom:0.4rem;">QR Pack Tracking</div>
+                <p style="font-size:0.8rem;color:#c8c2b8;margin:0;line-height:1.6;">Print a unique <strong style="color:#d4a847;">QR code on each carton</strong>. When a retailer scans to verify authenticity, you capture city/pin code data. Low cost way to map actual distribution reach within 30 days.</p>
+            </div>
+            <div class="glass-card reveal" style="background:rgba(239,68,68,0.06);border-color:rgba(239,68,68,0.2);">
+                <div style="font-size:1.6rem;margin-bottom:0.5rem;">⚠️</div>
+                <div style="font-weight:700;font-size:0.92rem;color:#ef4444;margin-bottom:0.4rem;">Quick-Commerce Warning</div>
+                <p style="font-size:0.8rem;color:#c8c2b8;margin:0;line-height:1.6;"><strong style="color:#f87171;">Do NOT launch on Blinkit / Swiggy Instamart in year 1.</strong> These platforms demand deep discounts, high listing fees, and punish out-of-stock brands. Build physical presence first.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════ NEW: DIGITAL IS THE MULTIPLIER ═══════════════ -->
+<div class="slide" data-slide="17">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:340px;height:340px;top:-60px;right:-55px;background:#60a5fa;opacity:0.08;"></div>
+        <div class="blob" style="width:230px;height:230px;bottom:-40px;left:-35px;background:#d4a847;opacity:0.08;"></div>
+    </div>
+    <div class="content">
+        <div class="section-label reveal">The Partnership's Core</div>
+        <h2 class="reveal" style="font-family:'Playfair Display',serif;font-size:clamp(1.5rem,2.8vw,2.2rem);font-weight:700;margin:0 0 0.7rem 0;">Digital Is the Multiplier — Built Once, Reused Everywhere</h2>
+        <div class="reveal" style="margin-bottom:0.9rem;padding:0.7rem 1rem;background:rgba(212,168,71,0.1);border-radius:10px;border:1px solid rgba(212,168,71,0.28);font-size:0.86rem;color:#c8c2b8;line-height:1.6;">
+            <strong style="color:#d4a847;">The all-India point:</strong> build the CRM, WhatsApp catalogue, beat templates and trial dashboards <strong style="color:#f0ede6;">once</strong> for Suraj's Andhra network — the same tools drop straight into Bangalore, then the rest of India. <strong style="color:#e8c97a;">Each new state is cheaper and faster than the last.</strong> That declining cost of expansion is the digital partner's lasting contribution.
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.85rem;">
+            <div class="glass-card reveal" style="text-align:center;">
+                <div class="stat-big grad-text glow-pulse" data-count="98" data-suffix="%">0</div>
+                <div style="font-size:0.78rem;color:#f0ede6;font-weight:600;margin:0.25rem 0;">WhatsApp open rate</div>
+                <p style="font-size:0.76rem;color:#8a8278;margin:0;line-height:1.5;">Catalogue + one-tap reorder + auto invoice &amp; UPI link. Near-zero cost to start.</p>
+            </div>
+            <div class="glass-card reveal" style="text-align:center;">
+                <div class="stat-big grad-text glow-pulse" data-count="38" data-suffix="%">0</div>
+                <div style="font-size:0.78rem;color:#f0ede6;font-weight:600;margin:0.25rem 0;">Salesman productivity ↑</div>
+                <p style="font-size:0.76rem;color:#8a8278;margin:0;line-height:1.5;">FieldAssist / Bizom SFA: +35–38% productivity, +30% outlet reach. ~₹few-hundred to ₹1,500/user/mo — phase in when a beat justifies it.</p>
+            </div>
+            <div class="glass-card reveal" style="text-align:center;">
+                <div class="stat-big" style="color:#22c55e;" data-count="30" data-suffix="%">0</div>
+                <div style="font-size:0.78rem;color:#f0ede6;font-weight:600;margin:0.25rem 0;">Outlet reach ↑</div>
+                <p style="font-size:0.76rem;color:#8a8278;margin:0;line-height:1.5;">Reorder reminders attack the stockout that loses the weekly rotation. QR on packs + auto-rickshaw ads = tracked trial.</p>
+            </div>
+        </div>
+        <div class="reveal" style="margin-top:0.85rem;padding:0.65rem 1rem;background:rgba(239,68,68,0.07);border-radius:10px;border:1px solid rgba(239,68,68,0.2);font-size:0.82rem;color:#c8c2b8;line-height:1.55;">
+            <strong style="color:#f87171;">Quick-commerce, honestly:</strong> Blinkit / Zepto take <strong style="color:#f0ede6;">18–25%+</strong> commission, and total platform costs eat <strong style="color:#f0ede6;">30–35%</strong> of the selling price. They rarely work below ~65% gross margin, which a value tea does not have. Revisit later — premium pack, single metro — not now.
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════ SLIDE 10: 3-STAGE ROADMAP ═══════════════ -->
+<div class="slide" data-slide="18">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:360px;height:360px;top:-70px;right:-65px;background:#d4a847;opacity:0.1;"></div>
+        <div class="blob" style="width:240px;height:240px;bottom:-45px;left:-40px;background:#8b6914;opacity:0.08;"></div>
+    </div>
+    <canvas class="particle-canvas-ambient" id="pc10"></canvas>
+    <div class="content">
+        <div class="section-label reveal">Growth Roadmap</div>
+        <h2 class="reveal" style="font-family:'Playfair Display',serif;font-size:clamp(1.5rem,2.8vw,2.2rem);font-weight:700;margin:0 0 1rem 0;">Three-Stage Expansion Plan</h2>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;">
+            <!-- Stage 0 -->
+            <div class="glass-card reveal" style="border-top:3px solid #d4a847;">
+                <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.6rem;">
+                    <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#8b6914,#d4a847);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:0.9rem;color:#0f1923;flex-shrink:0;">1</div>
+                    <div>
+                        <div style="font-weight:700;font-size:0.95rem;color:#f0ede6;">Prove the Model</div>
+                        <div style="font-size:0.72rem;color:#d4a847;font-weight:600;">Months 1–3</div>
+                    </div>
+                </div>
+                <div class="gold-line"></div>
+                <div style="font-size:0.8rem;color:#c8c2b8;line-height:1.7;margin-top:0.55rem;">
+                    <div>✅ Sign 1 master distributor — Guntakal</div>
+                    <div>✅ Activate 3 sub-distributor mandals</div>
+                    <div>✅ Target 100 kirana doors in 90 days</div>
+                    <div>✅ HoReCa: 15 tea stalls + 5 canteens</div>
+                    <div>✅ Field walk: record all competitor SKUs</div>
+                    <div>✅ Deploy WhatsApp reorder system</div>
+                </div>
+                <div style="margin-top:0.7rem;padding:0.45rem 0.6rem;background:rgba(212,168,71,0.1);border-radius:7px;font-size:0.75rem;color:#d4a847;font-weight:600;">
+                    🎯 Goal: 50 active repeat-buying shops by Day 90
+                </div>
+            </div>
+            <!-- Stage 1 -->
+            <div class="glass-card reveal" style="border-top:3px solid #f59e0b;">
+                <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.6rem;">
+                    <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#92400e,#f59e0b);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:0.9rem;color:#0f1923;flex-shrink:0;">2</div>
+                    <div>
+                        <div style="font-weight:700;font-size:0.95rem;color:#f0ede6;">Scale &amp; Automate</div>
+                        <div style="font-size:0.72rem;color:#f59e0b;font-weight:600;">Months 3–8</div>
+                    </div>
+                </div>
+                <div class="gold-line"></div>
+                <div style="font-size:0.8rem;color:#c8c2b8;line-height:1.7;margin-top:0.55rem;">
+                    <div>✅ Launch Yeshwanthpur HoReCa pilot</div>
+                    <div>✅ Sign Peenya wholesale distributor</div>
+                    <div>✅ Deploy SFA (BeatRoute or similar)</div>
+                    <div>✅ Introduce 250g sachet-pack SKU</div>
+                    <div>✅ QR-coded carton tracking live</div>
+                    <div>✅ Review AP mandal penetration data</div>
+                </div>
+                <div style="margin-top:0.7rem;padding:0.45rem 0.6rem;background:rgba(245,158,11,0.1);border-radius:7px;font-size:0.75rem;color:#f59e0b;font-weight:600;">
+                    🎯 Goal: 300+ active retail doors across 2 anchors
+                </div>
+            </div>
+            <!-- Stage 2 -->
+            <div class="glass-card reveal" style="border-top:3px solid #22c55e;">
+                <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.6rem;">
+                    <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#15803d,#22c55e);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:0.9rem;color:#0f1923;flex-shrink:0;">3</div>
+                    <div>
+                        <div style="font-weight:700;font-size:0.95rem;color:#f0ede6;">Expand Aggressively</div>
+                        <div style="font-size:0.72rem;color:#22c55e;font-weight:600;">Months 8–18</div>
+                    </div>
+                </div>
+                <div class="gold-line"></div>
+                <div style="font-size:0.8rem;color:#c8c2b8;line-height:1.7;margin-top:0.55rem;">
+                    <div>✅ Hyderabad wholesale penetration</div>
+                    <div>✅ Private-label tea for canteen chains</div>
+                    <div>✅ Target: 1,000 doors in AP+TS+KA</div>
+                    <div>✅ Auto-branding + wall-paint campaign</div>
+                    <div>✅ List on GetDistributors nationwide</div>
+                    <div>✅ Evaluate north/west India pilot</div>
+                </div>
+                <div style="margin-top:0.7rem;padding:0.45rem 0.6rem;background:rgba(34,197,94,0.1);border-radius:7px;font-size:0.75rem;color:#22c55e;font-weight:600;">
+                    🎯 Goal: Monthly revenue ₹25L+ from South India
+                </div>
+            </div>
+        </div>
+        <div class="reveal" style="margin-top:0.9rem;padding:0.6rem 1rem;background:rgba(212,168,71,0.07);border-radius:10px;border:1px solid rgba(212,168,71,0.18);font-size:0.8rem;color:#c8c2b8;">
+            <strong style="color:#d4a847;">Advance trigger between stages:</strong> Only move to the next stage when ≥60% of current stage's retail doors are reordering. Do not scale with weak retention.
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════ NEW: STAGE 0 + GATES + TRIGGERS ═══════════════ -->
+<div class="slide" data-slide="19">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:360px;height:360px;top:-70px;right:-65px;background:#d4a847;opacity:0.1;"></div>
+        <div class="blob" style="width:240px;height:240px;bottom:-45px;left:-40px;background:#8b6914;opacity:0.08;"></div>
+    </div>
+    <div class="content">
+        <div class="section-label reveal">The Road, In Order</div>
+        <h2 class="reveal" style="font-family:'Playfair Display',serif;font-size:clamp(1.5rem,2.8vw,2.2rem);font-weight:700;margin:0 0 0.9rem 0;">Start Now at Almost No Cost — and Know What Moves the Plan</h2>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+            <div>
+                <div class="glass-card reveal" style="border-top:3px solid #d4a847;margin-bottom:0.85rem;">
+                    <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.5rem;">
+                        <div style="width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#8b6914,#d4a847);display:flex;align-items:center;justify-content:center;font-weight:900;color:#0f1923;flex-shrink:0;">0</div>
+                        <div><div style="font-weight:700;font-size:0.95rem;color:#f0ede6;">Stage 0, Now — Build Confidence at Almost No Cost</div></div>
+                    </div>
+                    <div style="font-size:0.81rem;color:#c8c2b8;line-height:1.65;">
+                        <div>✅ Stand up a WhatsApp Business catalogue (Dust, Grain, Hotel Mix) with auto invoice &amp; UPI link.</div>
+                        <div>✅ Pilot one-tap reorder with <strong style="color:#f0ede6;">20–30 Guntakal hotels &amp; shops</strong>.</div>
+                        <div>✅ Put QR codes on packs and the first auto-rickshaw ads — track trial &amp; repeat from day one.</div>
+                    </div>
+                    <div style="margin-top:0.6rem;padding:0.45rem 0.6rem;background:rgba(212,168,71,0.12);border-radius:7px;font-size:0.78rem;color:#d4a847;font-weight:600;">🎯 Advance when &gt;40% of pilot outlets reorder via WhatsApp within 8 weeks.</div>
+                </div>
+                <div class="glass-card reveal" style="background:rgba(245,158,11,0.07);border-color:rgba(245,158,11,0.2);">
+                    <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:#f59e0b;font-weight:600;margin-bottom:0.4rem;">What Would Change the Plan</div>
+                    <div style="font-size:0.81rem;color:#c8c2b8;line-height:1.6;">
+                        <div>📈 A sustained jump in tea auction prices → more godown buffering &amp; private label.</div>
+                        <div>🔁 Faster loose-to-branded shift in Rayalaseema → appoint sub-distributors quicker.</div>
+                        <div>📉 Quick-commerce commissions well below 20% → bring the premium-pack trial forward.</div>
+                    </div>
+                </div>
+            </div>
+            <div class="glass-card reveal">
+                <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:#d4a847;font-weight:600;margin-bottom:0.6rem;">The Advance Gates — Each Stage Earns the Next</div>
+                <div style="display:flex;flex-direction:column;gap:0;position:relative;padding-left:1.9rem;">
+                    <div class="tl-line"></div>
+                    <div style="margin-bottom:0.85rem;position:relative;">
+                        <div class="tl-dot" style="position:absolute;left:-1.6rem;top:3px;"></div>
+                        <div style="font-weight:700;font-size:0.86rem;color:#f59e0b;">Stage 1 · Months 0–6 — Suraj builds the Andhra network</div>
+                        <div style="font-size:0.78rem;color:#8a8278;line-height:1.5;">Sub-distributors by mandal; position on strength + one-spoon-does-five vs Ganga, Modi, Gemini. <strong style="color:#c8c2b8;">Gate: 100+ active outlets before paying for any software.</strong></div>
+                    </div>
+                    <div style="margin-bottom:0.85rem;position:relative;">
+                        <div class="tl-dot" style="position:absolute;left:-1.6rem;top:3px;"></div>
+                        <div style="font-weight:700;font-size:0.86rem;color:#60a5fa;">Stage 2 · Months 6–18 — Bangalore + the software layer</div>
+                        <div style="font-size:0.78rem;color:#8a8278;line-height:1.5;">Yeshwanthpur &amp; Peenya beats; lean SFA once a beat has ≥30 outlets/salesman; hotel &amp; canteen CRM. <strong style="color:#c8c2b8;">Gate: +30% outlet reach &amp; a measurable cut in scheme leakage within 2 quarters.</strong></div>
+                    </div>
+                    <div style="position:relative;">
+                        <div class="tl-dot" style="position:absolute;left:-1.6rem;top:3px;background:#22c55e;box-shadow:0 0 10px rgba(34,197,94,0.7);"></div>
+                        <div style="font-weight:700;font-size:0.86rem;color:#4ade80;">Stage 3 · Months 18+ — The rest of India</div>
+                        <div style="font-size:0.78rem;color:#8a8278;line-height:1.5;">Reuse the whole digital stack into Western &amp; Northern metros. Premium pack on Blinkit only if a high-margin variant exists and it is profit-positive at the dark-store level first.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════ SLIDE 11: FIELD WALK GUIDE ═══════════════ -->
+<div class="slide" data-slide="20">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:340px;height:340px;top:-65px;right:-60px;background:#d4a847;opacity:0.09;"></div>
+        <div class="blob" style="width:230px;height:230px;bottom:-40px;left:-35px;background:#8b6914;opacity:0.07;"></div>
+    </div>
+    <div class="content">
+        <div class="section-label reveal">Immediate Action</div>
+        <h2 class="reveal" style="font-family:'Playfair Display',serif;font-size:clamp(1.5rem,2.8vw,2.2rem);font-weight:700;margin:0 0 0.9rem 0;">Field Walk — What to Do on Day 1</h2>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+            <div>
+                <div class="glass-card reveal">
+                    <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:#d4a847;font-weight:600;margin-bottom:0.65rem;">🗺️ Guntakal Walk Route (Half Day)</div>
+                    <div style="display:flex;flex-direction:column;gap:0.55rem;font-size:0.82rem;">
+                        <div style="display:flex;gap:0.6rem;"><div style="background:#d4a847;color:#0f1923;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.7rem;flex-shrink:0;">1</div><div style="color:#c8c2b8;"><strong style="color:#f0ede6;">Railway Station area</strong> — count tea stalls, note brand of CTC used, ask price paid</div></div>
+                        <div style="display:flex;gap:0.6rem;"><div style="background:#d4a847;color:#0f1923;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.7rem;flex-shrink:0;">2</div><div style="color:#c8c2b8;"><strong style="color:#f0ede6;">Vegetables Market &amp; Main Bazaar</strong> — photograph shelf facings, note which brands have dealer boards</div></div>
+                        <div style="display:flex;gap:0.6rem;"><div style="background:#d4a847;color:#0f1923;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.7rem;flex-shrink:0;">3</div><div style="color:#c8c2b8;"><strong style="color:#f0ede6;">Wholesale market lane</strong> — ask 3 traders "what's fast-moving this month?" — note the answer verbatim</div></div>
+                        <div style="display:flex;gap:0.6rem;"><div style="background:#d4a847;color:#0f1923;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.7rem;flex-shrink:0;">4</div><div style="color:#c8c2b8;"><strong style="color:#f0ede6;">Modi Tea beats</strong> — identify their distributor's depot, note delivery vehicle frequency</div></div>
+                        <div style="display:flex;gap:0.6rem;"><div style="background:#d4a847;color:#0f1923;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.7rem;flex-shrink:0;">5</div><div style="color:#c8c2b8;"><strong style="color:#f0ede6;">Exit meeting</strong> — shortlist top 3 distributor candidates, call same day</div></div>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div class="glass-card reveal">
+                    <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:#60a5fa;font-weight:600;margin-bottom:0.65rem;">🗺️ Yeshwanthpur Walk Route (Half Day)</div>
+                    <div style="display:flex;flex-direction:column;gap:0.55rem;font-size:0.82rem;">
+                        <div style="display:flex;gap:0.6rem;"><div style="background:#60a5fa;color:#0f1923;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.7rem;flex-shrink:0;">1</div><div style="color:#c8c2b8;"><strong style="color:#f0ede6;">Yeshwanthpur APMC</strong> — identify 5 active tea commission agents, record names &amp; phone numbers</div></div>
+                        <div style="display:flex;gap:0.6rem;"><div style="background:#60a5fa;color:#0f1923;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.7rem;flex-shrink:0;">2</div><div style="color:#c8c2b8;"><strong style="color:#f0ede6;">Peenya Industrial Area</strong> — visit 10 canteen operators, demo cup yield on phone video</div></div>
+                        <div style="display:flex;gap:0.6rem;"><div style="background:#60a5fa;color:#0f1923;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.7rem;flex-shrink:0;">3</div><div style="color:#c8c2b8;"><strong style="color:#f0ede6;">Yeshwanthpur station concourse</strong> — note Kanan Devan / AVT branding presence, confirm platform vendor contract holder</div></div>
+                        <div style="display:flex;gap:0.6rem;"><div style="background:#60a5fa;color:#0f1923;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.7rem;flex-shrink:0;">4</div><div style="color:#c8c2b8;"><strong style="color:#f0ede6;">3 kirana shops near Rajajinagar</strong> — ask: "AVT or Kanan Devan — which gives better margin?" Note exactly what they say</div></div>
+                        <div style="display:flex;gap:0.6rem;"><div style="background:#60a5fa;color:#0f1923;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.7rem;flex-shrink:0;">5</div><div style="color:#c8c2b8;"><strong style="color:#f0ede6;">One HoReCa introduction</strong> — leave 500g sample + WhatsApp number with a high-volume dhaba owner</div></div>
+                    </div>
+                </div>
+                <div class="glass-card reveal" style="margin-top:0.9rem;background:rgba(212,168,71,0.08);border-color:rgba(212,168,71,0.2);">
+                    <div style="font-size:0.78rem;color:#c8c2b8;line-height:1.6;">
+                        <strong style="color:#d4a847;">📋 Record on every stop:</strong> brand visible, price per kg, pack sizes stocked, competitor dealer board present (Y/N), and one quote from the shop owner about what they wish was better about their current supplier.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════ SLIDE 12: KEY NUMBERS ═══════════════ -->
+<div class="slide" data-slide="21">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:500px;height:500px;top:-110px;right:-100px;background:#d4a847;opacity:0.12;"></div>
+        <div class="blob" style="width:300px;height:300px;bottom:-70px;left:-60px;background:#8b6914;opacity:0.1;"></div>
+        <div class="blob" style="width:180px;height:180px;top:35%;left:10%;background:#e8c97a;opacity:0.08;"></div>
+    </div>
+    <canvas class="particle-canvas-ambient" id="pc12"></canvas>
+    <div class="content" style="text-align:center;">
+        <div class="section-label reveal" style="text-align:center;">Numbers That Matter</div>
+        <h2 class="reveal" style="font-family:'Playfair Display',serif;font-size:clamp(1.6rem,3vw,2.4rem);font-weight:700;margin:0 0 1.2rem 0;text-align:center;">The Data Behind the Strategy</h2>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1rem;">
+            <div class="glass-card reveal" style="text-align:center;">
+                <div class="stat-big grad-text glow-pulse" data-count="400" data-suffix="">0</div>
+                <div style="color:#d4a847;font-size:0.78rem;font-weight:600;margin:0.2rem 0;">cups/kg</div>
+                <div style="font-size:0.72rem;color:#8a8278;">Dil Shah Assam CTC yield</div>
+            </div>
+            <div class="glass-card reveal" style="text-align:center;">
+                <div class="stat-big grad-text glow-pulse" data-count="250" data-suffix="+">0</div>
+                <div style="color:#ef4444;font-size:0.78rem;font-weight:600;margin:0.2rem 0;">Modi Tea distributors</div>
+                <div style="font-size:0.72rem;color:#8a8278;">AP &amp; Telangana network</div>
+            </div>
+            <div class="glass-card reveal" style="text-align:center;">
+                <div class="stat-big grad-text glow-pulse" data-count="11.72" data-suffix="B$">0</div>
+                <div style="color:#d4a847;font-size:0.78rem;font-weight:600;margin:0.2rem 0;">India tea market</div>
+                <div style="font-size:0.72rem;color:#8a8278;">Valued 2024 (USD)</div>
+            </div>
+            <div class="glass-card reveal" style="text-align:center;">
+                <div class="stat-big grad-text glow-pulse" data-count="4.34" data-suffix="%">0</div>
+                <div style="color:#22c55e;font-size:0.78rem;font-weight:600;margin:0.2rem 0;">Market CAGR</div>
+                <div style="font-size:0.72rem;color:#8a8278;">Through 2030</div>
+            </div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;">
+            <div class="glass-card reveal" style="text-align:center;">
+                <div class="stat-big" style="color:#22c55e;" data-count="22500" data-suffix="₹">0</div>
+                <div style="color:#22c55e;font-size:0.78rem;font-weight:600;margin:0.2rem 0;">/month saving</div>
+                <div style="font-size:0.72rem;color:#8a8278;">vs rival brand per tea stall</div>
+            </div>
+            <div class="glass-card reveal" style="text-align:center;">
+                <div class="stat-big grad-text glow-pulse" data-count="270" data-suffix="M kg">0</div>
+                <div style="color:#d4a847;font-size:0.78rem;font-weight:600;margin:0.2rem 0;">India exports FY26</div>
+                <div style="font-size:0.72rem;color:#8a8278;">Record high volume</div>
+            </div>
+            <div class="glass-card reveal" style="text-align:center;">
+                <div class="stat-big grad-text glow-pulse" data-count="17500" data-suffix="">0</div>
+                <div style="color:#60a5fa;font-size:0.78rem;font-weight:600;margin:0.2rem 0;">cups/hour</div>
+                <div style="font-size:0.72rem;color:#8a8278;">Bengaluru City Station</div>
+            </div>
+            <div class="glass-card reveal" style="text-align:center;">
+                <div class="stat-big" style="color:#f59e0b;" data-count="113" data-suffix="">0</div>
+                <div style="color:#f59e0b;font-size:0.78rem;font-weight:600;margin:0.2rem 0;">kirana doors</div>
+                <div style="font-size:0.72rem;color:#8a8278;">Guntakal Phase 1 target</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════ NEW: A NOTE ON THE NUMBERS ═══════════════ -->
+<div class="slide" data-slide="22">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:340px;height:340px;top:-65px;right:-60px;background:#6A6A6A;opacity:0.1;"></div>
+        <div class="blob" style="width:230px;height:230px;bottom:-45px;left:-35px;background:#d4a847;opacity:0.07;"></div>
+    </div>
+    <div class="content">
+        <div class="section-label reveal">Stated Plainly</div>
+        <h2 class="reveal" style="font-family:'Playfair Display',serif;font-size:clamp(1.5rem,2.8vw,2.2rem);font-weight:700;margin:0 0 0.5rem 0;">A Note on the Numbers</h2>
+        <p class="reveal" style="font-size:0.82rem;color:#8a8278;margin:0 0 0.9rem 0;">So this earns trust rather than overselling. Honesty about what is solid and what is background.</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+            <div class="glass-card reveal" style="background:rgba(34,197,94,0.07);border-color:rgba(34,197,94,0.22);">
+                <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:#22c55e;font-weight:700;margin-bottom:0.5rem;">✓ Reliable — Act on These</div>
+                <div style="font-size:0.82rem;color:#c8c2b8;line-height:1.7;">
+                    <div>• India is 2nd-largest producer, largest producer of black tea.</div>
+                    <div>• Export record: 280.40 M kg, and CTC's dominance.</div>
+                    <div>• HUL leads by value, Tata Consumer by volume.</div>
+                    <div>• The named competitors, the prices to verify, the distributor model and the digital plan.</div>
+                </div>
+            </div>
+            <div class="glass-card reveal" style="background:rgba(106,106,106,0.12);border-color:rgba(255,255,255,0.12);">
+                <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:#8a8278;font-weight:700;margin-bottom:0.5rem;">≈ Background — Direction, Not Fact</div>
+                <div style="font-size:0.8rem;color:#c8c2b8;line-height:1.65;">
+                    <div>• Global market size ($27–159 B) varies wildly by definition.</div>
+                    <div>• National brand-share % circulate without firm sources.</div>
+                    <div>• Branded-vs-loose split (~⅔ branded) is contested — trend solid, exact number not.</div>
+                    <div>• Per-capita ~840 g varies by survey.</div>
+                    <div>• No town-level tea data exists for Guntakal, Anantapur or Bangalore sub-areas.</div>
+                    <div>• 2026 prices are online / wholesale proxies — need field check.</div>
+                    <div>• Andhra Tea Corp's brand names unverified — confirm locally.</div>
+                    <div>• Digital uplift % are vendor best-case — real gains need field discipline.</div>
+                </div>
+            </div>
+        </div>
+        <div class="reveal" style="margin-top:0.9rem;padding:0.7rem 1rem;background:rgba(212,168,71,0.1);border-radius:10px;border:1px solid rgba(212,168,71,0.28);font-size:0.86rem;color:#f0ede6;line-height:1.6;text-align:center;">
+            This briefing carries <strong style="color:#e8c97a;">no commercial or equity terms by design.</strong> That conversation comes after the market picture is shared and the trust is built.
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════ SLIDE 13: NEXT STEPS ═══════════════ -->
+<div class="slide" data-slide="23">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:480px;height:480px;top:-100px;right:-90px;background:#d4a847;opacity:0.13;"></div>
+        <div class="blob" style="width:300px;height:300px;bottom:-65px;left:-55px;background:#8b6914;opacity:0.11;"></div>
+        <div class="blob" style="width:180px;height:180px;top:40%;left:8%;background:#e8c97a;opacity:0.09;"></div>
+    </div>
+    <canvas class="particle-canvas" id="pc13"></canvas>
+    <div class="content" style="text-align:center;">
+        <div style="font-size:clamp(3rem,6vw,5rem);margin-bottom:1rem;animation:float 3.5s ease-in-out infinite;">🚀</div>
+        <h2 class="reveal" style="font-family:'Playfair Display',serif;font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:900;margin:0 0 0.4rem 0;background:linear-gradient(135deg,#d4a847,#e8c97a,#d4a847);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Three Actions This Week</h2>
+        <p class="reveal" style="font-size:0.9rem;color:#8a8278;margin:0 0 1.5rem 0;letter-spacing:0.08em;text-transform:uppercase;">Start here. Everything else follows.</p>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.2rem;">
+            <div class="glass-card reveal" style="border-top:3px solid #d4a847;">
+                <div style="font-size:2rem;margin-bottom:0.5rem;">🗺️</div>
+                <div style="font-weight:700;font-size:0.95rem;color:#d4a847;margin-bottom:0.4rem;">Action 1</div>
+                <p style="font-size:0.83rem;color:#c8c2b8;margin:0;line-height:1.6;"><strong style="color:#f0ede6;">Field Walk — Guntakal</strong><br>Spend one full day. Follow the route on Slide 11. Record every brand, every price, every contact.</p>
+            </div>
+            <div class="glass-card reveal" style="border-top:3px solid #22c55e;">
+                <div style="font-size:2rem;margin-bottom:0.5rem;">📞</div>
+                <div style="font-weight:700;font-size:0.95rem;color:#22c55e;margin-bottom:0.4rem;">Action 2</div>
+                <p style="font-size:0.83rem;color:#c8c2b8;margin:0;line-height:1.6;"><strong style="color:#f0ede6;">Map Modi Tea's beats</strong><br>Find their Anantapur distributor. Know exactly which mandals they cover before appointing your own distributor.</p>
+            </div>
+            <div class="glass-card reveal" style="border-top:3px solid #60a5fa;">
+                <div style="font-size:2rem;margin-bottom:0.5rem;">📹</div>
+                <div style="font-weight:700;font-size:0.95rem;color:#60a5fa;margin-bottom:0.4rem;">Action 3</div>
+                <p style="font-size:0.83rem;color:#c8c2b8;margin:0;line-height:1.6;"><strong style="color:#f0ede6;">Shoot the Cup Yield Video</strong><br>1 kg Dil Shah → brew 400 cups on camera. This becomes the core sales tool for every distributor pitch.</p>
+            </div>
+        </div>
+        <div class="reveal gold-line" style="width:200px;margin:0 auto 0.7rem;"></div>
+        <p class="reveal" style="font-size:0.82rem;color:#8a8278;letter-spacing:0.12em;text-transform:uppercase;">Dil Shah Tea · South India Market Entry · 2026</p>
+    </div>
+</div>
+
+</div>
+
+<!-- NAVIGATION -->
+<div class="nav-controls">
+    <button class="nav-btn" onclick="changeSlide(-1)">&#8249;</button>
+    <div class="slide-dots" id="dots"></div>
+    <button class="nav-btn" onclick="changeSlide(1)">&#8250;</button>
+    <span class="slide-counter" id="counter">1 / 23</span>
+</div>
+
+<script>
+    /* ── DECK NAV ── */
+    let current = 1;
+    const total = document.querySelectorAll('.slide').length;
+    const dotsEl = document.getElementById('dots');
+    const counterEl = document.getElementById('counter');
+    for (let i = 1; i <= total; i++) {
+        const d = document.createElement('div');
+        d.className = 'dot' + (i === 1 ? ' active' : '');
+        d.onclick = () => goToSlide(i);
+        dotsEl.appendChild(d);
+    }
+    function goToSlide(n) {
+        document.querySelector('.slide.active')?.classList.remove('active');
+        const next = document.querySelector(`.slide[data-slide="${n}"]`);
+        if (next) { next.classList.add('active'); animateSlide(next); }
+        current = n; updateNav();
+    }
+    function changeSlide(d) { let n = current + d; if (n < 1) n = total; if (n > total) n = 1; goToSlide(n); }
+    function updateNav() {
+        document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i + 1 === current));
+        counterEl.textContent = current + ' / ' + total;
+    }
+    document.addEventListener('keydown', e => {
+        if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); changeSlide(1); }
+        if (e.key === 'ArrowLeft') { e.preventDefault(); changeSlide(-1); }
+    });
+    let touchX = 0;
+    document.addEventListener('touchstart', e => { touchX = e.touches[0].clientX; });
+    document.addEventListener('touchend', e => { const d = touchX - e.changedTouches[0].clientX; if (Math.abs(d) > 50) changeSlide(d > 0 ? 1 : -1); });
+
+    /* ── REVEAL ── */
+    function animateSlide(slide) {
+        slide.querySelectorAll('.reveal').forEach((el, i) => {
+            el.style.transition = 'none'; el.style.opacity = '0'; el.style.transform = 'translateY(18px)';
+            el.offsetHeight;
+            const delay = i * 0.07;
+            el.style.transition = `opacity 0.35s ease ${delay}s, transform 0.35s ease ${delay}s`;
+            el.style.opacity = '1'; el.style.transform = 'translateY(0)';
+        });
+        animateEffects(slide);
+    }
+
+    /* ── EFFECTS ── */
+    function animateEffects(slide) {
+        // counters
+        slide.querySelectorAll('[data-count]:not(.counted)').forEach(el => {
+            el.classList.add('counted');
+            const target = parseFloat(el.dataset.count);
+            const suffix = el.dataset.suffix || '';
+            const isDecimal = String(target).includes('.');
+            let cur = 0; const steps = 45; const inc = target / steps;
+            const timer = setInterval(() => {
+                cur += inc;
+                if (cur >= target) { cur = target; clearInterval(timer); }
+                el.textContent = (isDecimal ? cur.toFixed(2) : Math.round(cur).toLocaleString()) + suffix;
+            }, 28);
+        });
+        // bars
+        slide.querySelectorAll('.bar-fill:not(.fill-done)').forEach((bar, i) => {
+            bar.classList.add('fill-done');
+            bar.style.width = '0%';
+            bar.style.transition = `width 0.65s ease ${i * 0.06}s`;
+            bar.offsetHeight;
+            bar.style.width = (bar.dataset.width || '0') + '%';
+        });
+    }
+
+    /* ── PARTICLES ── */
+    function initParticles(canvas, interactive) {
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        const resize = () => { canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight; };
+        resize();
+        const count = interactive ? 45 : 15;
+        let mx = -1000, my = -1000;
+        const pts = Array.from({length: count}, () => ({
+            x: Math.random() * canvas.width, y: Math.random() * canvas.height,
+            vx: (Math.random() - 0.5) * 0.28, vy: (Math.random() - 0.5) * 0.28,
+            size: Math.random() * 2 + 0.6, alpha: Math.random() * 0.3 + 0.08
+        }));
+        if (interactive) {
+            canvas.addEventListener('mousemove', e => { const r = canvas.getBoundingClientRect(); mx = e.clientX - r.left; my = e.clientY - r.top; });
+            canvas.addEventListener('mouseleave', () => { mx = -1000; my = -1000; });
+        }
+        (function tick() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            pts.forEach(p => {
+                if (interactive) { const dx = p.x - mx, dy = p.y - my, dist = Math.sqrt(dx*dx + dy*dy); if (dist < 110) { const f = (110 - dist) / 110 * 1.8; p.vx += (dx/dist)*f*0.09; p.vy += (dy/dist)*f*0.09; } }
+                p.vx *= 0.98; p.vy *= 0.98; p.x += p.vx; p.y += p.vy;
+                if (p.x < 0) p.x = canvas.width; if (p.x > canvas.width) p.x = 0;
+                if (p.y < 0) p.y = canvas.height; if (p.y > canvas.height) p.y = 0;
+                ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI*2);
+                ctx.fillStyle = `rgba(212,168,71,${p.alpha})`; ctx.fill();
+            });
+            requestAnimationFrame(tick);
+        })();
+    }
+    initParticles(document.getElementById('pc1'), true);
+    initParticles(document.getElementById('pc10'), false);
+    initParticles(document.getElementById('pc12'), false);
+    initParticles(document.getElementById('pc13'), true);
+
+    /* ── MOUSE SPOTLIGHT ── */
+    document.addEventListener('mousemove', e => {
+        const s = document.getElementById('spotlight');
+        if (s) s.style.background = `radial-gradient(500px circle at ${e.clientX}px ${e.clientY}px, rgba(212,168,71,0.055), transparent 40%)`;
+    });
+
+    /* ── INIT ──
+       Reveal content is visible by default via CSS, so every slide renders even in
+       viewers that paginate slides without calling goToSlide() (e.g. the
+       slides-format=viewport artifact runtime). Settle each slide's counters and
+       bar fills to their final values up-front so no slide ever shows "0" or empty
+       bars. The staggered reveal entrance still plays on navigation via animateSlide(). */
+    document.querySelectorAll('.slide').forEach(function(s){ try { animateEffects(s); } catch(e) {} });
+</script>
+</body>
+</html>
