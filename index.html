@@ -8,9 +8,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <style type="text/tailwindcss">
-        @theme {
+    <style>
+        :root {
             --color-bg: #0f1923;
             --color-bg-deep: #070d12;
             --color-surface: #1a2535;
@@ -28,17 +27,6 @@
             --color-vignette: rgba(0,0,0,0.45);
             --font-display: "Playfair Display", serif;
             --font-body: "DM Sans", sans-serif;
-        }
-    </style>
-    <style>
-        :root {
-            --color-bg: #0f1923;
-            --color-text: #f0ede6;
-            --color-accent-1: #d4a847;
-            --color-accent-2: #e8c97a;
-            --color-glass-bg: rgba(255,255,255,0.06);
-            --color-glass-border: rgba(255,255,255,0.10);
-            --color-vignette: rgba(0,0,0,0.45);
             --glow-color-rgb: 212,168,71;
         }
         *, *::before, *::after { box-sizing: border-box; }
@@ -218,6 +206,104 @@
         #pl-tbl td, #pl-tbl th { padding: 0.24rem 0.6rem; font-size: 0.76rem; line-height: 1.2; }
         #pl-tbl .badge { padding: 0.08rem 0.5rem; font-size: 0.62rem; }
 
+        /* ─── SLIDE PROGRESS BAR (shown on mobile) ─── */
+        .slide-progress {
+            position: fixed; top: 0; left: 0; right: 0; height: 4px;
+            background: rgba(212,168,71,0.12); z-index: 200; display: none;
+        }
+        .slide-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #8b6914 0%, #d4a847 60%, #e8c97a 100%);
+            transition: width 0.35s ease;
+            width: 4.35%; /* 1/23 */
+            box-shadow: 0 0 8px rgba(212,168,71,0.5);
+        }
+
+        /* ─── RESPONSIVE: TABLET (768–1024px) ─── */
+        @media (min-width: 768px) and (max-width: 1024px) {
+            .slide > .content { padding: clamp(1rem, 2.5vw, 2.5rem); }
+            div[style*="repeat(4,1fr)"]  { grid-template-columns: repeat(2,1fr) !important; }
+            div[style*="repeat(4, 1fr)"] { grid-template-columns: repeat(2,1fr) !important; }
+            div[style*="repeat(3,1fr)"]  { grid-template-columns: repeat(2,1fr) !important; }
+            div[style*="repeat(3, 1fr)"] { grid-template-columns: repeat(2,1fr) !important; }
+            .nav-btn { width: 40px; height: 40px; }
+        }
+
+        /* ─── RESPONSIVE: MOBILE (≤767px) ─── */
+        @media (max-width: 767px) {
+            /* Show progress strip */
+            .slide-progress { display: block; }
+
+            /* Slide: start content at top, scroll within viewport */
+            .slide { justify-content: flex-start; overflow: auto !important; -webkit-overflow-scrolling: touch; }
+            .slide > .content { padding: 1.1rem 0.95rem 108px; }
+
+            /* Drop GPU-heavy effects on mobile */
+            .glass-card { backdrop-filter: none; -webkit-backdrop-filter: none; }
+            .nav-controls { backdrop-filter: none; -webkit-backdrop-filter: none; background: rgba(7,13,18,0.98); }
+
+            /* Headings */
+            h2 { word-break: break-word; hyphens: auto; }
+            .section-label { font-size: 0.65rem; letter-spacing: 0.14em; margin-bottom: 0.25rem; }
+
+            /* Collapse every grid to single column — exclude the scrollable heatmap */
+            div[style*="grid-template-columns"]:not(.hm-grid) {
+                grid-template-columns: 1fr !important;
+                gap: 0.7rem !important;
+            }
+
+            /* Stat numbers */
+            .stat-big { font-size: clamp(2rem, 9vw, 2.8rem) !important; }
+
+            /* Glass cards: tighter padding + horizontal scroll for tables */
+            .glass-card { padding: 0.85rem 0.9rem; overflow-x: auto; }
+            .data-table { min-width: 380px; }
+            .data-table th { font-size: 0.7rem; padding: 0.4rem 0.55rem; }
+            .data-table td { font-size: 0.78rem; padding: 0.4rem 0.55rem; }
+
+            /* Rhythm */
+            .gold-line { margin: 0.45rem 0; }
+            .tl-line { left: 14px; }
+            .bar-track { height: 24px; }
+
+            /* ── MOBILE NAV: full-width bottom bar ── */
+            .nav-controls {
+                left: 0; right: 0; bottom: 0;
+                transform: none;
+                width: 100%;
+                border-radius: 0;
+                border: none;
+                border-top: 1px solid rgba(212,168,71,0.18);
+                background: rgba(7,13,18,0.98);
+                padding: 10px 16px;
+                padding-bottom: max(14px, env(safe-area-inset-bottom));
+                justify-content: space-between;
+                gap: 0;
+            }
+            .nav-btn {
+                width: 64px; height: 54px;
+                font-size: 1.75rem;
+                border-radius: 12px;
+                background: rgba(212,168,71,0.10);
+                border: 1px solid rgba(212,168,71,0.22);
+                transition: background 0.15s, transform 0.1s;
+            }
+            .nav-btn:active { background: rgba(212,168,71,0.28); transform: scale(0.95); }
+            .slide-dots { display: none; }
+            .slide-counter {
+                font-size: 1rem; font-weight: 700;
+                color: #d4a847; min-width: auto;
+                letter-spacing: 0.04em;
+                display: flex; align-items: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .slide > .content { padding: 0.9rem 0.8rem 108px; }
+            .glass-card { padding: 0.75rem 0.85rem; }
+            .nav-btn { width: 58px; height: 50px; font-size: 1.6rem; }
+        }
+
         @media (prefers-reduced-motion: reduce) {
             *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.2s !important; }
         }
@@ -278,16 +364,44 @@
             </div>
             <div>
                 <div class="glass-card reveal" style="margin-bottom:0.9rem;">
-                    <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:#d4a847;font-weight:600;margin-bottom:0.7rem;">Who Runs What</div>
-                    <div style="display:flex;flex-direction:column;gap:0.7rem;font-size:0.84rem;color:#c8c2b8;line-height:1.55;">
-                        <div style="display:flex;gap:0.7rem;align-items:flex-start;">
-                            <span style="font-size:1.3rem;">🧭</span>
-                            <div><strong style="color:#f0ede6;">Suraj Karwa</strong> — Andhra Pradesh &amp; Rayalaseema, anchored at Guntakal (Vaibhav Agencies). Appoints sub-distributors mandal by mandal, the same model Modi Tea built.</div>
+                    <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:#d4a847;font-weight:600;margin-bottom:0.75rem;">Who Runs What</div>
+                    <div style="display:flex;flex-direction:column;gap:0.65rem;">
+
+                        <!-- ① Vikas Bihani — Owner, comes first -->
+                        <div style="display:flex;gap:0.8rem;align-items:flex-start;background:rgba(212,168,71,0.09);border:1px solid rgba(212,168,71,0.28);border-radius:11px;padding:0.8rem 0.9rem;">
+                            <div style="font-size:1.55rem;line-height:1.1;flex-shrink:0;">👑</div>
+                            <div style="flex:1;min-width:0;">
+                                <div style="display:flex;flex-wrap:wrap;align-items:center;gap:0.4rem;margin-bottom:0.3rem;">
+                                    <strong style="color:#f0ede6;font-size:0.95rem;">Vikas Bihani</strong>
+                                    <span class="badge badge-gold" style="font-size:0.6rem;">Owner</span>
+                                    <span class="badge badge-gold" style="font-size:0.6rem;">All India</span>
+                                </div>
+                                <div style="font-size:0.78rem;color:#d4a847;font-weight:700;margin-bottom:0.2rem;">Shri Laxmi Tea Company</div>
+                                <div style="font-size:0.74rem;color:#8a8278;margin-bottom:0.35rem;">Head Office &amp; National Enquiries · Laggere, Bengaluru</div>
+                                <div style="font-size:0.8rem;color:#c8c2b8;line-height:1.55;">Owns and leads national operations — Yeshwanthpur (Bengaluru) anchor, all-India expansion, and the digital layer that compounds across every new state.</div>
+                            </div>
                         </div>
-                        <div style="display:flex;gap:0.7rem;align-items:flex-start;">
-                            <span style="font-size:1.3rem;">🚀</span>
-                            <div><strong style="color:#f0ede6;">Vikas</strong> — Bangalore and the rest of India, with the digital partnership that compounds across every new state.</div>
+
+                        <!-- hierarchy connector -->
+                        <div style="display:flex;align-items:center;gap:0.6rem;padding-left:1.3rem;">
+                            <div style="width:2px;height:18px;background:linear-gradient(180deg,rgba(212,168,71,0.5),rgba(245,158,11,0.3));border-radius:2px;"></div>
+                            <div style="font-size:0.65rem;color:#8a8278;text-transform:uppercase;letter-spacing:0.1em;">Exclusive state distributor</div>
                         </div>
+
+                        <!-- ② Suraj Karwa — AP Distributor, comes second -->
+                        <div style="display:flex;gap:0.8rem;align-items:flex-start;background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.18);border-radius:11px;padding:0.8rem 0.9rem;">
+                            <div style="font-size:1.55rem;line-height:1.1;flex-shrink:0;">🧭</div>
+                            <div style="flex:1;min-width:0;">
+                                <div style="display:flex;flex-wrap:wrap;align-items:center;gap:0.4rem;margin-bottom:0.3rem;">
+                                    <strong style="color:#f0ede6;font-size:0.95rem;">Suraj Karwa</strong>
+                                    <span class="badge badge-amber" style="font-size:0.6rem;">AP Exclusive</span>
+                                </div>
+                                <div style="font-size:0.78rem;color:#f59e0b;font-weight:700;margin-bottom:0.2rem;">Vaibhav Agencies</div>
+                                <div style="font-size:0.74rem;color:#8a8278;margin-bottom:0.35rem;">Exclusive Distributor, Andhra Pradesh · Guntakal</div>
+                                <div style="font-size:0.8rem;color:#c8c2b8;line-height:1.55;">Anchors Rayalaseema &amp; AP — appoints sub-distributors mandal by mandal, the same model Modi Tea built.</div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
                 <div class="glass-card reveal" style="background:rgba(212,168,71,0.1);border-color:rgba(212,168,71,0.28);">
@@ -679,7 +793,7 @@
         <h2 class="reveal" style="font-family:'Playfair Display',serif;font-size:clamp(1.5rem,2.8vw,2.2rem);font-weight:700;margin:0 0 0.9rem 0;">Brand Strength Matrix — South India</h2>
         <div class="reveal" style="overflow-x:auto;">
             <div style="min-width:640px;">
-                <div style="display:grid;grid-template-columns:130px repeat(6,1fr);gap:4px;font-size:0.72rem;">
+                <div class="hm-grid" style="display:grid;grid-template-columns:130px repeat(6,1fr);gap:4px;font-size:0.72rem;">
                     <!-- Header -->
                     <div style="color:#8a8278;padding:0.4rem 0.2rem;"></div>
                     <div style="color:#d4a847;font-weight:700;text-align:center;padding:0.4rem 0.2rem;">Distribution</div>
@@ -995,7 +1109,7 @@
                 </div>
                 <div class="glass-card reveal" style="background:rgba(212,168,71,0.07);border-color:rgba(212,168,71,0.2);">
                     <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:#d4a847;font-weight:600;margin-bottom:0.45rem;">GetDistributors.com Profile</div>
-                    <p style="font-size:0.82rem;color:#c8c2b8;margin:0;line-height:1.55;">Dil Shah / Shri Laxmi Tea Company is <strong style="color:#f0ede6;">already live on GetDistributors.com</strong> seeking partners (₹1–2L investment range). This listing should be the first call-to-action in every city — direct potential distributors to the live profile immediately.</p>
+                    <p style="font-size:0.82rem;color:#c8c2b8;margin:0;line-height:1.55;"><strong style="color:#f0ede6;">Vikas Bihani / Shri Laxmi Tea Company</strong> (Dil Shah Tea) is <strong style="color:#f0ede6;">already live on GetDistributors.com</strong> seeking partners (₹1–2L investment range). This listing should be the first call-to-action in every city — direct potential distributors to the live profile immediately.</p>
                 </div>
             </div>
         </div>
@@ -1102,7 +1216,7 @@
         <div class="section-label reveal">The Partnership's Core</div>
         <h2 class="reveal" style="font-family:'Playfair Display',serif;font-size:clamp(1.5rem,2.8vw,2.2rem);font-weight:700;margin:0 0 0.7rem 0;">Digital Is the Multiplier — Built Once, Reused Everywhere</h2>
         <div class="reveal" style="margin-bottom:0.9rem;padding:0.7rem 1rem;background:rgba(212,168,71,0.1);border-radius:10px;border:1px solid rgba(212,168,71,0.28);font-size:0.86rem;color:#c8c2b8;line-height:1.6;">
-            <strong style="color:#d4a847;">The all-India point:</strong> build the CRM, WhatsApp catalogue, beat templates and trial dashboards <strong style="color:#f0ede6;">once</strong> for Suraj's Andhra network — the same tools drop straight into Bangalore, then the rest of India. <strong style="color:#e8c97a;">Each new state is cheaper and faster than the last.</strong> That declining cost of expansion is the digital partner's lasting contribution.
+            <strong style="color:#d4a847;">The all-India point:</strong> build the CRM, WhatsApp catalogue, beat templates and trial dashboards <strong style="color:#f0ede6;">once</strong> for Suraj's Andhra network — the same tools drop straight into <strong style="color:#f0ede6;">Vikas Bihani's Bengaluru operation</strong>, then the rest of India. <strong style="color:#e8c97a;">Each new state is cheaper and faster than the last.</strong> That declining cost of expansion is the national owner's lasting edge.
         </div>
         <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.85rem;">
             <div class="glass-card reveal" style="text-align:center;">
@@ -1249,7 +1363,7 @@
                     <div class="tl-line"></div>
                     <div style="margin-bottom:0.85rem;position:relative;">
                         <div class="tl-dot" style="position:absolute;left:-1.6rem;top:3px;"></div>
-                        <div style="font-weight:700;font-size:0.86rem;color:#f59e0b;">Stage 1 · Months 0–6 — Suraj builds the Andhra network</div>
+                        <div style="font-weight:700;font-size:0.86rem;color:#f59e0b;">Stage 1 · Months 0–6 — Suraj (Vaibhav Agencies) builds the Andhra network</div>
                         <div style="font-size:0.78rem;color:#8a8278;line-height:1.5;">Sub-distributors by mandal; position on strength + one-spoon-does-five vs Ganga, Modi, Gemini. <strong style="color:#c8c2b8;">Gate: 100+ active outlets before paying for any software.</strong></div>
                     </div>
                     <div style="margin-bottom:0.85rem;position:relative;">
@@ -1445,6 +1559,9 @@
 
 </div>
 
+<!-- PROGRESS BAR (mobile) -->
+<div class="slide-progress"><div class="slide-progress-fill" id="progress-fill"></div></div>
+
 <!-- NAVIGATION -->
 <div class="nav-controls">
     <button class="nav-btn" onclick="changeSlide(-1)">&#8249;</button>
@@ -1475,14 +1592,20 @@
     function updateNav() {
         document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i + 1 === current));
         counterEl.textContent = current + ' / ' + total;
+        const fill = document.getElementById('progress-fill');
+        if (fill) fill.style.width = ((current / total) * 100) + '%';
     }
     document.addEventListener('keydown', e => {
         if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); changeSlide(1); }
         if (e.key === 'ArrowLeft') { e.preventDefault(); changeSlide(-1); }
     });
-    let touchX = 0;
-    document.addEventListener('touchstart', e => { touchX = e.touches[0].clientX; });
-    document.addEventListener('touchend', e => { const d = touchX - e.changedTouches[0].clientX; if (Math.abs(d) > 50) changeSlide(d > 0 ? 1 : -1); });
+    let touchX = 0, touchY = 0;
+    document.addEventListener('touchstart', e => { touchX = e.touches[0].clientX; touchY = e.touches[0].clientY; });
+    document.addEventListener('touchend', e => {
+        const dx = touchX - e.changedTouches[0].clientX;
+        const dy = touchY - e.changedTouches[0].clientY;
+        if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) changeSlide(dx > 0 ? 1 : -1);
+    });
 
     /* ── REVEAL ── */
     function animateSlide(slide) {
@@ -1524,6 +1647,7 @@
     /* ── PARTICLES ── */
     function initParticles(canvas, interactive) {
         if (!canvas) return;
+        if (window.innerWidth < 768) return; // too GPU-heavy for mobile
         const ctx = canvas.getContext('2d');
         const resize = () => { canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight; };
         resize();
@@ -1569,6 +1693,7 @@
        bar fills to their final values up-front so no slide ever shows "0" or empty
        bars. The staggered reveal entrance still plays on navigation via animateSlide(). */
     document.querySelectorAll('.slide').forEach(function(s){ try { animateEffects(s); } catch(e) {} });
+    updateNav();
 </script>
 </body>
 </html>
